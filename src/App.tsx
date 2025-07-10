@@ -6,6 +6,25 @@ interface InputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+interface ButtonProps {
+  onClick?: () => void;
+  children: React.ReactNode;
+}
+
+class Button extends React.Component<ButtonProps> {
+  render() {
+    return (
+      <button 
+        onClick={this.props.onClick}
+      >
+        {this.props.children}
+      </button>
+    );
+  }
+}
+
+
+
 class Input extends React.Component<InputProps> {
   render() {
     return (
@@ -23,6 +42,10 @@ class App extends React.Component<object, { inputValue: string }> {
     super(props);
     this.state = { inputValue: "" };
   }
+  
+  handleClick = () => {
+  };
+
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ inputValue: e.target.value });
@@ -36,6 +59,9 @@ class App extends React.Component<object, { inputValue: string }> {
           onChange={this.handleInputChange}
         />
         <p>{this.state.inputValue}</p>
+        <Button onClick={this.handleClick}>
+          Поиск
+        </Button>
       </div>
     );
   }

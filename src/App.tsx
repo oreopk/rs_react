@@ -1,6 +1,10 @@
 import React from "react";
 import "./App.css";
 
+interface PlanetUrl {
+  url: string;
+}
+
 interface InputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -12,7 +16,7 @@ interface ButtonProps {
 }
 
 interface PlanetProperties {
-  name: string;
+  name?: string;
   diameter: string;
   rotation_period: string;
   orbital_period: string;
@@ -20,14 +24,10 @@ interface PlanetProperties {
   climate: string;
   terrain: string;
 }
-interface PlanetUrl {
-  url: string;
-  name: string;
-}
 
 interface Planet {
-  uid: string;
-  name: string;
+  uid?: string;
+  name?: string;
   properties: PlanetProperties;
 }
 
@@ -71,55 +71,90 @@ interface PlanetDetailsResponse {
   };
 }
 
+interface PlanetDetailsResponseSearch {
+  result: [];
+}
+
+interface PlanetDetailsResponseSearchSolo {
+  uid: string;
+  properties: PlanetProperties;
+}
+
 class App extends React.Component<object, AppState> {
   apiUrl: string = "https://swapi.tech/api/planets";
+  localStorageKey: string = "starWarsQuery";
 
   constructor(props: object) {
     super(props);
     this.state = {
-      inputValue: "",
+      inputValue: localStorage.getItem(this.localStorageKey) || "",
       searchResults: [],
     };
   }
 
   fetchPlanets = async (searchQuery: string = "") => {
     let url: string;
+    let planets: Planet[] = [];
     if (searchQuery) {
-      url = this.apiUrl + "?search=" + encodeURIComponent(searchQuery);
+      url = this.apiUrl + "?name=" + encodeURIComponent(searchQuery);
+      const listResponse = await fetch(url);
+      if (!listResponse.ok) {
+        throw new Error(`Failed`);
+      }
+      const listData: PlanetDetailsResponseSearch = await listResponse.json();
+      if (listData.result) {
+        console.log(listData.result);
+      }
+      planets = listData.result.map(
+        (planet: PlanetDetailsResponseSearchSolo) => {
+          return {
+            uid: planet.uid,
+            name: planet.properties.name,
+            properties: {
+              diameter: planet.properties.diameter,
+              rotation_period: planet.properties.rotation_period,
+              orbital_period: planet.properties.orbital_period,
+              population: planet.properties.population,
+              climate: planet.properties.climate,
+              terrain: planet.properties.terrain,
+            },
+          };
+        },
+      );
     } else {
       url = this.apiUrl;
-    }
+      const listResponse = await fetch(url);
+      const listData: PlanetsListResponse = await listResponse.json();
+      planets = await Promise.all(
+        listData.results.map(async (planet: PlanetUrl) => {
+          const detailsResponse = await fetch(planet.url);
+          if (!detailsResponse.ok) {
+            throw new Error(`Failed`);
+          }
 
-    const listResponse = await fetch(url);
-
-    const listData: PlanetsListResponse = await listResponse.json();
-    const planets = await Promise.all(
-      listData.results.map(async (planet: PlanetUrl) => {
-        const detailsResponse = await fetch(planet.url);
-        if (!detailsResponse.ok) {
-          throw new Error(`Failed`);
-        }
-        const detailsData: PlanetDetailsResponse = await detailsResponse.json();
-        return {
-          uid: detailsData.result.uid,
-          name: detailsData.result.properties.name,
-          properties: {
+          const detailsData: PlanetDetailsResponse =
+            await detailsResponse.json();
+          return {
+            uid: detailsData.result.uid,
             name: detailsData.result.properties.name,
-            diameter: detailsData.result.properties.diameter,
-            rotation_period: detailsData.result.properties.rotation_period,
-            orbital_period: detailsData.result.properties.orbital_period,
-            population: detailsData.result.properties.population,
-            climate: detailsData.result.properties.climate,
-            terrain: detailsData.result.properties.terrain,
-          },
-        };
-      }),
-    );
-
+            properties: {
+              name: detailsData.result.properties.name,
+              diameter: detailsData.result.properties.diameter,
+              rotation_period: detailsData.result.properties.rotation_period,
+              orbital_period: detailsData.result.properties.orbital_period,
+              population: detailsData.result.properties.population,
+              climate: detailsData.result.properties.climate,
+              terrain: detailsData.result.properties.terrain,
+            },
+          };
+        }),
+      );
+    }
     this.setState({ searchResults: planets });
   };
 
   handleSearch = () => {
+    localStorage.setItem(this.localStorageKey, this.state.inputValue);
     this.fetchPlanets(this.state.inputValue);
   };
 
@@ -129,6 +164,9 @@ class App extends React.Component<object, AppState> {
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ inputValue: e.target.value });
+    if (!e.target.value) {
+      localStorage.removeItem(this.localStorageKey);
+    }
   };
 
   render() {
@@ -144,7 +182,7 @@ class App extends React.Component<object, AppState> {
         </div>
 
         <div className="results-container">
-          {searchResults.length != 0 ? (
+          {inputValue.trim() !== "" && searchResults.length === 0 ? (
             <div className="no-results">Nothing</div>
           ) : (
             <ul className="results-list">

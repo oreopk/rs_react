@@ -174,7 +174,7 @@ class App extends React.Component<object, AppState> {
 
     return (
       <div className="app-container">
-        <h1>Star Wars Planets</h1>
+        <h1 className="title">Star Wars Planets</h1>
 
         <div className="search-container">
           <Input value={inputValue} onChange={this.handleInputChange} />
@@ -183,21 +183,53 @@ class App extends React.Component<object, AppState> {
 
         <div className="results-container">
           {inputValue.trim() !== "" && searchResults.length === 0 ? (
-            <div className="no-results">Nothing</div>
+            <div className="nothing">Nothing</div>
           ) : (
-            <ul className="results-list">
+            <div className="results-grid">
               {searchResults.map((planet: Planet) => (
-                <li key={planet.uid}>
-                  <h3>{planet.name}</h3>
-                  <p>Diameter: {planet.properties.diameter}</p>
-                  <p>Climate: {planet.properties.climate}</p>
-                  <p>Terrain: {planet.properties.terrain}</p>
-                  <p>Population: {planet.properties.population}</p>
-                  <p>Rotation Period: {planet.properties.rotation_period}</p>
-                  <p>Orbital Period: {planet.properties.orbital_period}</p>
-                </li>
+                <div key={planet.uid} className="planet-card">
+                  <div className="planet-details">
+                    <h3 className="planet-name">{planet.name}</h3>
+                    <div className="detail-row">
+                      <span className="detail-label">Diameter:</span>
+                      <span className="prop_planet">
+                        {planet.properties.diameter}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Climate:</span>
+                      <span className="prop_planet">
+                        {planet.properties.climate}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Terrain:</span>
+                      <span className="prop_planet">
+                        {planet.properties.terrain}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Population:</span>
+                      <span className="prop_planet">
+                        {planet.properties.population}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Rotation Period:</span>
+                      <span className="prop_planet">
+                        {planet.properties.rotation_period}
+                      </span>
+                    </div>
+                    <div className="detail-row">
+                      <span className="detail-label">Orbital Period:</span>
+                      <span className="prop_planet">
+                        {planet.properties.orbital_period}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       </div>

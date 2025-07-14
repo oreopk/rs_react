@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
 
-interface PlanetUrl {
-  url: string;
-}
+// interface PlanetUrl {
+//   url: string;
+// }
 
 interface InputProps {
   value: string;
@@ -44,6 +44,8 @@ interface PlanetsListResponse {
 interface AppState {
   inputValue: string;
   searchResults: Planet[];
+  isLoading: boolean;
+  error: string | null;
 }
 
 class Button extends React.Component<ButtonProps> {
@@ -89,10 +91,13 @@ class App extends React.Component<object, AppState> {
     this.state = {
       inputValue: localStorage.getItem(this.localStorageKey) || "",
       searchResults: [],
+      isLoading: false,
+      error: null,
     };
   }
 
   fetchPlanets = async (searchQuery: string = "") => {
+    this.setState({ isLoading: true, error: null });
     let url: string;
     let planets: Planet[] = [];
     if (searchQuery) {
@@ -125,32 +130,34 @@ class App extends React.Component<object, AppState> {
       url = this.apiUrl;
       const listResponse = await fetch(url);
       const listData: PlanetsListResponse = await listResponse.json();
-      planets = await Promise.all(
-        listData.results.map(async (planet: PlanetUrl) => {
-          const detailsResponse = await fetch(planet.url);
-          if (!detailsResponse.ok) {
-            throw new Error(`Failed`);
-          }
+      // planets = await Promise.all(
+      // listData.results.map(async (planet: PlanetUrl) => {
+      for (const planet of listData.results) {
+        const detailsResponse = await fetch(planet.url);
+        if (!detailsResponse.ok) {
+          throw new Error(`Failed`);
+        }
 
-          const detailsData: PlanetDetailsResponse =
-            await detailsResponse.json();
-          return {
-            uid: detailsData.result.uid,
+        const detailsData: PlanetDetailsResponse = await detailsResponse.json();
+        // return {
+        planets.push({
+          uid: detailsData.result.uid,
+          name: detailsData.result.properties.name,
+          properties: {
             name: detailsData.result.properties.name,
-            properties: {
-              name: detailsData.result.properties.name,
-              diameter: detailsData.result.properties.diameter,
-              rotation_period: detailsData.result.properties.rotation_period,
-              orbital_period: detailsData.result.properties.orbital_period,
-              population: detailsData.result.properties.population,
-              climate: detailsData.result.properties.climate,
-              terrain: detailsData.result.properties.terrain,
-            },
-          };
-        }),
-      );
+            diameter: detailsData.result.properties.diameter,
+            rotation_period: detailsData.result.properties.rotation_period,
+            orbital_period: detailsData.result.properties.orbital_period,
+            population: detailsData.result.properties.population,
+            climate: detailsData.result.properties.climate,
+            terrain: detailsData.result.properties.terrain,
+          },
+        });
+      }
+      // }),
+      // );
     }
-    this.setState({ searchResults: planets });
+    this.setState({ searchResults: planets, isLoading: false });
   };
 
   handleSearch = () => {
@@ -159,18 +166,18 @@ class App extends React.Component<object, AppState> {
   };
 
   componentDidMount() {
-    this.fetchPlanets();
+    this.setState({
+      inputValue: localStorage.getItem(this.localStorageKey) || "",
+    });
+    this.fetchPlanets(this.state.inputValue);
   }
 
   handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ inputValue: e.target.value });
-    if (!e.target.value) {
-      localStorage.removeItem(this.localStorageKey);
-    }
   };
 
   render() {
-    const { inputValue, searchResults } = this.state;
+    const { inputValue, searchResults, isLoading } = this.state;
 
     return (
       <div className="app-container">
@@ -180,58 +187,63 @@ class App extends React.Component<object, AppState> {
           <Input value={inputValue} onChange={this.handleInputChange} />
           <Button onClick={this.handleSearch}>{"Search"}</Button>
         </div>
-
-        <div className="results-container">
-          {inputValue.trim() !== "" && searchResults.length === 0 ? (
-            <div className="nothing">Nothing</div>
-          ) : (
-            <div className="results-grid">
-              {searchResults.map((planet: Planet) => (
-                <div key={planet.uid} className="planet-card">
-                  <div className="planet-details">
-                    <h3 className="planet-name">{planet.name}</h3>
-                    <div className="detail-row">
-                      <span className="detail-label">Diameter:</span>
-                      <span className="prop_planet">
-                        {planet.properties.diameter}
-                      </span>
-                    </div>
-                    <div className="detail-row">
-                      <span className="detail-label">Climate:</span>
-                      <span className="prop_planet">
-                        {planet.properties.climate}
-                      </span>
-                    </div>
-                    <div className="detail-row">
-                      <span className="detail-label">Terrain:</span>
-                      <span className="prop_planet">
-                        {planet.properties.terrain}
-                      </span>
-                    </div>
-                    <div className="detail-row">
-                      <span className="detail-label">Population:</span>
-                      <span className="prop_planet">
-                        {planet.properties.population}
-                      </span>
-                    </div>
-                    <div className="detail-row">
-                      <span className="detail-label">Rotation Period:</span>
-                      <span className="prop_planet">
-                        {planet.properties.rotation_period}
-                      </span>
-                    </div>
-                    <div className="detail-row">
-                      <span className="detail-label">Orbital Period:</span>
-                      <span className="prop_planet">
-                        {planet.properties.orbital_period}
-                      </span>
+        {isLoading ? (
+          <div className="spinner-container">
+            <div className="spinner"></div>
+          </div>
+        ) : (
+          <div className="results-container">
+            {inputValue.trim() !== "" && searchResults.length === 0 ? (
+              <div className="nothing">Nothing</div>
+            ) : (
+              <div className="results-grid">
+                {searchResults.map((planet: Planet) => (
+                  <div key={planet.uid} className="planet-card">
+                    <div className="planet-details">
+                      <h3 className="planet-name">{planet.name}</h3>
+                      <div className="detail-row">
+                        <span className="detail-label">Diameter:</span>
+                        <span className="prop_planet">
+                          {planet.properties.diameter}
+                        </span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Climate:</span>
+                        <span className="prop_planet">
+                          {planet.properties.climate}
+                        </span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Terrain:</span>
+                        <span className="prop_planet">
+                          {planet.properties.terrain}
+                        </span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Population:</span>
+                        <span className="prop_planet">
+                          {planet.properties.population}
+                        </span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Rotation Period:</span>
+                        <span className="prop_planet">
+                          {planet.properties.rotation_period}
+                        </span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Orbital Period:</span>
+                        <span className="prop_planet">
+                          {planet.properties.orbital_period}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     );
   }

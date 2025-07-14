@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import ErrorButton from "./ErrorButton";
 
 // interface PlanetUrl {
 //   url: string;
@@ -46,6 +47,7 @@ interface AppState {
   searchResults: Planet[];
   isLoading: boolean;
   error: string | null;
+  throwBoolean: boolean;
 }
 
 class Button extends React.Component<ButtonProps> {
@@ -93,8 +95,17 @@ class App extends React.Component<object, AppState> {
       searchResults: [],
       isLoading: false,
       error: null,
+      throwBoolean: false,
     };
   }
+
+  resetErrorState = () => {
+    this.setState({ throwBoolean: false });
+  };
+
+  triggerError = () => {
+    this.setState({ throwBoolean: true });
+  };
 
   fetchPlanets = async (searchQuery: string = "") => {
     this.setState({ isLoading: true, error: null });
@@ -104,7 +115,7 @@ class App extends React.Component<object, AppState> {
       url = this.apiUrl + "?name=" + encodeURIComponent(searchQuery);
       const listResponse = await fetch(url);
       if (!listResponse.ok) {
-        throw new Error(`Failed`);
+        throw new Error("Error in request");
       }
       const listData: PlanetDetailsResponseSearch = await listResponse.json();
       if (listData.result) {
@@ -177,7 +188,11 @@ class App extends React.Component<object, AppState> {
   };
 
   render() {
-    const { inputValue, searchResults, isLoading } = this.state;
+    const { inputValue, searchResults, isLoading, throwBoolean } = this.state;
+
+    if (throwBoolean) {
+      throw new Error("Test error");
+    }
 
     return (
       <div className="app-container">
@@ -244,6 +259,7 @@ class App extends React.Component<object, AppState> {
             )}
           </div>
         )}
+        <ErrorButton onClick={this.triggerError} />
       </div>
     );
   }

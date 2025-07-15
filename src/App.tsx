@@ -6,10 +6,6 @@ import Input from "./Input";
 import PlanetCard from "./PlanetCard";
 import Spinner from "./Spinner";
 
-// interface PlanetUrl {
-//   url: string;
-// }
-
 interface PlanetProperties {
   name?: string;
   diameter: string;
@@ -117,8 +113,7 @@ class App extends React.Component<object, AppState> {
       url = this.apiUrl;
       const listResponse = await fetch(url);
       const listData: PlanetsListResponse = await listResponse.json();
-      // planets = await Promise.all(
-      // listData.results.map(async (planet: PlanetUrl) => {
+
       for (const planet of listData.results) {
         const detailsResponse = await fetch(planet.url);
         if (!detailsResponse.ok) {
@@ -141,8 +136,6 @@ class App extends React.Component<object, AppState> {
           },
         });
       }
-      // }),
-      // );
     }
     this.setState({ searchResults: planets, isLoading: false });
   };

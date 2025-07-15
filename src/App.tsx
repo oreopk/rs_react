@@ -1,20 +1,14 @@
 import React from "react";
 import "./App.css";
 import ErrorButton from "./ErrorButton";
+import Button from "./Button";
+import Input from "./Input";
+import PlanetCard from "./PlanetCard";
+import Spinner from "./Spinner";
 
 // interface PlanetUrl {
 //   url: string;
 // }
-
-interface InputProps {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-interface ButtonProps {
-  onClick: () => void;
-  children: React.ReactNode;
-}
 
 interface PlanetProperties {
   name?: string;
@@ -48,24 +42,6 @@ interface AppState {
   isLoading: boolean;
   error: string | null;
   throwBoolean: boolean;
-}
-
-class Button extends React.Component<ButtonProps> {
-  render() {
-    return <button onClick={this.props.onClick}>{this.props.children}</button>;
-  }
-}
-
-class Input extends React.Component<InputProps> {
-  render() {
-    return (
-      <input
-        type="text"
-        value={this.props.value}
-        onChange={this.props.onChange}
-      />
-    );
-  }
 }
 
 interface PlanetDetailsResponse {
@@ -203,9 +179,7 @@ class App extends React.Component<object, AppState> {
           <Button onClick={this.handleSearch}>{"Search"}</Button>
         </div>
         {isLoading ? (
-          <div className="spinner-container">
-            <div className="spinner"></div>
-          </div>
+          <Spinner />
         ) : (
           <div className="results-container">
             {inputValue.trim() !== "" && searchResults.length === 0 ? (
@@ -213,47 +187,7 @@ class App extends React.Component<object, AppState> {
             ) : (
               <div className="results-grid">
                 {searchResults.map((planet: Planet) => (
-                  <div key={planet.uid} className="planet-card">
-                    <div className="planet-details">
-                      <h3 className="planet-name">{planet.name}</h3>
-                      <div className="detail-row">
-                        <span className="detail-label">Diameter:</span>
-                        <span className="prop_planet">
-                          {planet.properties.diameter}
-                        </span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="detail-label">Climate:</span>
-                        <span className="prop_planet">
-                          {planet.properties.climate}
-                        </span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="detail-label">Terrain:</span>
-                        <span className="prop_planet">
-                          {planet.properties.terrain}
-                        </span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="detail-label">Population:</span>
-                        <span className="prop_planet">
-                          {planet.properties.population}
-                        </span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="detail-label">Rotation Period:</span>
-                        <span className="prop_planet">
-                          {planet.properties.rotation_period}
-                        </span>
-                      </div>
-                      <div className="detail-row">
-                        <span className="detail-label">Orbital Period:</span>
-                        <span className="prop_planet">
-                          {planet.properties.orbital_period}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <PlanetCard key={planet.uid} planet={planet} />
                 ))}
               </div>
             )}

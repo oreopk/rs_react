@@ -121,7 +121,6 @@ class App extends React.Component<object, AppState> {
         }
 
         const detailsData: PlanetDetailsResponse = await detailsResponse.json();
-        // return {
         planets.push({
           uid: detailsData.result.uid,
           name: detailsData.result.properties.name,

@@ -1,8 +1,8 @@
 import { screen, render } from "@testing-library/react";
-import App from "./App";
+import App from "../App";
 
-describe("App tests", () => {
-  it("should render the title", () => {
+describe("App tests render", () => {
+  test("should render the title", () => {
     render(<App />);
 
     expect(

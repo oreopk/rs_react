@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 describe("Search Component Tests", () => {
   const localStorageMock = {
     getItem: vi.fn(),
+    setItem: vi.fn(),
   };
 
   beforeEach(() => {
@@ -52,5 +53,39 @@ describe("Search Component Tests", () => {
     await user.type(inputElement, "Alderaan");
 
     expect(inputElement).toHaveValue("Alderaan");
+  });
+
+  test("save to localStorage", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    const inputElement = screen.getByRole("textbox");
+    const buttonElement = screen.getByRole("button", { name: /Search/ });
+
+    await user.type(inputElement, "Coruscant");
+    await user.click(buttonElement);
+
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      "starWarsQuery",
+      "Coruscant",
+    );
+  });
+
+  test("should trim whitespace", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    const inputElement = screen.getByRole("textbox");
+    const searchButton = screen.getByRole("button", { name: /Search/ });
+
+    await user.type(inputElement, "  Tatooine  ");
+    await user.click(searchButton);
+
+    expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      "starWarsQuery",
+      "Tatooine",
+    );
   });
 });

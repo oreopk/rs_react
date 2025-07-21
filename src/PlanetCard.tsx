@@ -20,7 +20,7 @@ class PlanetCard extends React.Component<{ planet: Planet }> {
   render() {
     const { planet } = this.props;
     return (
-      <div className="planet-card">
+      <div className="planet-card" role="article">
         <div className="planet-details">
           <h3 className="planet-name">{planet.name}</h3>
           <div className="detail-row">

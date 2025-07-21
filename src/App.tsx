@@ -84,7 +84,7 @@ class App extends React.Component<object, AppState> {
     let url: string;
     let planets: Planet[] = [];
     if (searchQuery) {
-      url = this.apiUrl + "?name=" + encodeURIComponent(searchQuery);
+      url = this.apiUrl + "?name=" + encodeURIComponent(searchQuery.trim());
       const listResponse = await fetch(url);
       if (!listResponse.ok) {
         throw new Error("Error in request");
@@ -140,7 +140,7 @@ class App extends React.Component<object, AppState> {
   };
 
   handleSearch = () => {
-    localStorage.setItem(this.localStorageKey, this.state.inputValue);
+    localStorage.setItem(this.localStorageKey, this.state.inputValue.trim());
     this.fetchPlanets(this.state.inputValue);
   };
 

@@ -163,7 +163,7 @@ class App extends React.Component<object, AppState> {
     }
 
     return (
-      <div className="app-container">
+      <div className="app-container" data-testid="app">
         <h1 className="title">Star Wars Planets</h1>
 
         <div className="search-container">

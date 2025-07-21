@@ -10,5 +10,6 @@ describe("App tests render", () => {
         level: 1,
       }),
     ).toHaveTextContent("Star Wars Planets");
+    expect(screen.getByTestId("app")).toBeInTheDocument();
   });
 });

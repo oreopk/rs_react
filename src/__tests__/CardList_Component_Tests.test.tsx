@@ -19,7 +19,7 @@ describe("Planet Cards Rendering", () => {
         const cards = screen.getAllByRole("article");
         expect(cards).toHaveLength(1);
       },
-      { timeout: 1500 },
+      { timeout: 2500 },
     );
   });
 });

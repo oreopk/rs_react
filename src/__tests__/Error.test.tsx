@@ -24,4 +24,21 @@ describe("Error component", () => {
     expect(errorCalls[0][1].toString()).toContain("Error: Test error");
     ErrorSpy.mockRestore();
   });
+
+  it("should click reboot button", async () => {
+    render(
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>,
+    );
+
+    const errorButton = screen.getByRole("button", { name: /Error/ });
+    await userEvent.click(errorButton);
+
+    const rebootButton = screen.getByRole("button", { name: /Reboot/ });
+    await userEvent.click(rebootButton);
+
+    expect(screen.queryByText(/Test error/)).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Error/ })).toBeInTheDocument();
+  });
 });

@@ -5,10 +5,8 @@ interface ButtonProps {
   children: React.ReactNode;
 }
 
-class Button extends React.Component<ButtonProps> {
-  render() {
-    return <button onClick={this.props.onClick}>{this.props.children}</button>;
-  }
+function Button({ onClick, children }: ButtonProps): React.ReactElement {
+  return <button onClick={onClick}>{children}</button>;
 }
 
 export default Button;

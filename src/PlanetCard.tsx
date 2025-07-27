@@ -16,45 +16,42 @@ interface PlanetProperties {
   terrain: string;
 }
 
-class PlanetCard extends React.Component<{ planet: Planet }> {
-  render() {
-    const { planet } = this.props;
-    return (
-      <div className="planet-card" role="article">
-        <div className="planet-details">
-          <h3 className="planet-name">{planet.name}</h3>
-          <div className="detail-row">
-            <span className="detail-label">Diameter:</span>
-            <span className="prop_planet">{planet.properties.diameter}</span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Climate:</span>
-            <span className="prop_planet">{planet.properties.climate}</span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Terrain:</span>
-            <span className="prop_planet">{planet.properties.terrain}</span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Population:</span>
-            <span className="prop_planet">{planet.properties.population}</span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Rotation Period:</span>
-            <span className="prop_planet">
-              {planet.properties.rotation_period}
-            </span>
-          </div>
-          <div className="detail-row">
-            <span className="detail-label">Orbital Period:</span>
-            <span className="prop_planet">
-              {planet.properties.orbital_period}
-            </span>
-          </div>
+function PlanetCard({ planet }: { planet: Planet }): React.ReactElement {
+  return (
+    <div className="planet-card" role="article">
+      <div className="planet-details">
+        <h3 className="planet-name">{planet.name}</h3>
+        <div className="detail-row">
+          <span className="detail-label">Diameter:</span>
+          <span className="prop_planet">{planet.properties.diameter}</span>
+        </div>
+        <div className="detail-row">
+          <span className="detail-label">Climate:</span>
+          <span className="prop_planet">{planet.properties.climate}</span>
+        </div>
+        <div className="detail-row">
+          <span className="detail-label">Terrain:</span>
+          <span className="prop_planet">{planet.properties.terrain}</span>
+        </div>
+        <div className="detail-row">
+          <span className="detail-label">Population:</span>
+          <span className="prop_planet">{planet.properties.population}</span>
+        </div>
+        <div className="detail-row">
+          <span className="detail-label">Rotation Period:</span>
+          <span className="prop_planet">
+            {planet.properties.rotation_period}
+          </span>
+        </div>
+        <div className="detail-row">
+          <span className="detail-label">Orbital Period:</span>
+          <span className="prop_planet">
+            {planet.properties.orbital_period}
+          </span>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default PlanetCard;

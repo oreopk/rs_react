@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 
-export function Page404() {
+function Page404() {
   return (
     <div>
       <h1>404</h1>
@@ -8,3 +8,5 @@ export function Page404() {
     </div>
   );
 }
+
+export default Page404;

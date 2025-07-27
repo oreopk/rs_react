@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import App from "../App";
+import MainPage from "../MainPage";
 import { PlanetApi } from "../PlanetFetch";
 
 vi.mock("../PlanetFetch", () => ({
@@ -48,7 +48,7 @@ describe("Planet Cards Rendering", () => {
   test("should render 1 planet cards", async () => {
     const user = userEvent.setup();
     vi.mocked(PlanetApi.fetchPlanets).mockResolvedValue(mockPlanet);
-    render(<App />);
+    render(<MainPage />);
 
     const inputElement = screen.getByRole("textbox");
     await user.type(inputElement, "Tatooine");
@@ -67,7 +67,7 @@ describe("Planet Cards Rendering", () => {
 
   test("should render all planet cards", async () => {
     vi.mocked(PlanetApi.fetchPlanets).mockResolvedValue(mockPlanet);
-    render(<App />);
+    render(<MainPage />);
     expect(await screen.findByRole("article")).toBeInTheDocument();
     expect(screen.getByText(mockPlanet[0].name)).toBeInTheDocument();
     expect(
@@ -78,7 +78,7 @@ describe("Planet Cards Rendering", () => {
     vi.mocked(PlanetApi.fetchPlanets).mockRejectedValueOnce(
       new Error("Error in request"),
     );
-    render(<App />);
+    render(<MainPage />);
 
     const error = await screen.findByTestId("error-message");
     expect(error).toBeInTheDocument();

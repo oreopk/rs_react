@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react";
-import App from "../App";
+import MainPage from "../MainPage";
 import ErrorBoundary from "../ErrorBoundary";
 import { describe, it, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
@@ -10,7 +10,7 @@ describe("Error component", () => {
 
     render(
       <ErrorBoundary>
-        <App />
+        <MainPage />
       </ErrorBoundary>,
     );
 
@@ -28,7 +28,7 @@ describe("Error component", () => {
   it("should click reboot button", async () => {
     render(
       <ErrorBoundary>
-        <App />
+        <MainPage />
       </ErrorBoundary>,
     );
 

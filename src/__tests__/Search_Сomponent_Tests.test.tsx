@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
-import App from "../App";
+import MainPage from "../MainPage";
 import userEvent from "@testing-library/user-event";
 describe("Search Component Tests", () => {
   const localStorageMock = {
@@ -13,7 +13,7 @@ describe("Search Component Tests", () => {
   });
 
   test("should render Input and Button elements", () => {
-    render(<App />);
+    render(<MainPage />);
 
     const inputElement = screen.getByRole("textbox");
     expect(inputElement).toBeVisible();
@@ -31,7 +31,7 @@ describe("Search Component Tests", () => {
         return null;
       }
     });
-    render(<App />);
+    render(<MainPage />);
     expect(screen.getByRole("textbox")).toHaveValue(testQuery);
     expect(localStorageMock.getItem).toHaveBeenCalledWith("starWarsQuery");
   });
@@ -40,14 +40,14 @@ describe("Search Component Tests", () => {
     localStorageMock.getItem.mockImplementation(() => {
       return null;
     });
-    render(<App />);
+    render(<MainPage />);
     expect(screen.getByRole("textbox")).toHaveValue("");
     expect(localStorageMock.getItem).toHaveBeenCalledWith("starWarsQuery");
   });
 
   test("should update input value when typing", async () => {
     const user = userEvent.setup();
-    render(<App />);
+    render(<MainPage />);
 
     const inputElement = screen.getByRole("textbox");
     await user.type(inputElement, "Alderaan");
@@ -58,7 +58,7 @@ describe("Search Component Tests", () => {
   test("save to localStorage", async () => {
     const user = userEvent.setup();
 
-    render(<App />);
+    render(<MainPage />);
 
     const inputElement = screen.getByRole("textbox");
     const buttonElement = screen.getByRole("button", { name: /Search/ });
@@ -75,7 +75,7 @@ describe("Search Component Tests", () => {
   test("should trim whitespace", async () => {
     const user = userEvent.setup();
 
-    render(<App />);
+    render(<MainPage />);
 
     const inputElement = screen.getByRole("textbox");
     const searchButton = screen.getByRole("button", { name: /Search/ });

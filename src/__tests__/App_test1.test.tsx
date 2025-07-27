@@ -1,9 +1,9 @@
 import { screen, render } from "@testing-library/react";
-import App from "../App";
+import MainPage from "../MainPage";
 
 describe("App tests render", () => {
   test("should render the title", () => {
-    render(<App />);
+    render(<MainPage />);
 
     expect(
       screen.getByRole("heading", {

@@ -119,16 +119,16 @@ input {
   align-items: center;
 }
 
-.rs_link{
-   font-size: 1.5rem;
-   color: #a0910f;
-   text-decoration: none;
+.rs_link {
+  font-size: 1.5rem;
+  color: #a0910f;
+  text-decoration: none;
 }
 
-.rs_link:hover{
-   font-size: 1.9rem;
-   color: #f0d806;
-   text-decoration: none;
+.rs_link:hover {
+  font-size: 1.9rem;
+  color: #f0d806;
+  text-decoration: none;
 }
 
 .prop_planet {

@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import MainPage from "../MainPage";
 import { PlanetApi } from "../PlanetFetch";
+import { BrowserRouter as Router } from "react-router-dom";
 
 vi.mock("../PlanetFetch", () => ({
   PlanetApi: {
@@ -48,7 +49,11 @@ describe("Planet Cards Rendering", () => {
   test("should render 1 planet cards", async () => {
     const user = userEvent.setup();
     vi.mocked(PlanetApi.fetchPlanets).mockResolvedValue(mockPlanet);
-    render(<MainPage />);
+    render(
+      <Router>
+        <MainPage />
+      </Router>,
+    );
 
     const inputElement = screen.getByRole("textbox");
     await user.type(inputElement, "Tatooine");
@@ -67,7 +72,11 @@ describe("Planet Cards Rendering", () => {
 
   test("should render all planet cards", async () => {
     vi.mocked(PlanetApi.fetchPlanets).mockResolvedValue(mockPlanet);
-    render(<MainPage />);
+    render(
+      <Router>
+        <MainPage />
+      </Router>,
+    );
     expect(await screen.findByRole("article")).toBeInTheDocument();
     expect(screen.getByText(mockPlanet[0].name)).toBeInTheDocument();
     expect(
@@ -78,7 +87,11 @@ describe("Planet Cards Rendering", () => {
     vi.mocked(PlanetApi.fetchPlanets).mockRejectedValueOnce(
       new Error("Error in request"),
     );
-    render(<MainPage />);
+    render(
+      <Router>
+        <MainPage />
+      </Router>,
+    );
 
     const error = await screen.findByTestId("error-message");
     expect(error).toBeInTheDocument();

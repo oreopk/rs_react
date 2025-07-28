@@ -5,6 +5,7 @@ import Button from "./Button";
 import Input from "./Input";
 import PlanetCard from "./PlanetCard";
 import Spinner from "./Spinner";
+import Header from "./Header";
 import { PlanetApi } from "./PlanetFetch";
 
 interface PlanetProperties {
@@ -77,6 +78,7 @@ function MainPage(): React.ReactElement {
 
   return (
     <div className="app-container" data-testid="app">
+      <Header></Header>
       <h1 className="title">Star Wars Planets</h1>
       {error ? <div data-testid="error-message">{error}</div> : null}
       <div className="search-container">

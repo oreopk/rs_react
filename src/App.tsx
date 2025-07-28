@@ -5,7 +5,7 @@ import Button from "./Button";
 import Input from "./Input";
 import PlanetCard from "./PlanetCard";
 import Spinner from "./Spinner";
-
+import { PlanetApi } from "./PlanetFetch";
 interface PlanetProperties {
   name?: string;
   diameter: string;
@@ -22,16 +22,6 @@ interface Planet {
   properties: PlanetProperties;
 }
 
-interface PlanetsListItem {
-  uid: string;
-  name: string;
-  url: string;
-}
-
-interface PlanetsListResponse {
-  results: PlanetsListItem[];
-}
-
 interface AppState {
   inputValue: string;
   searchResults: Planet[];
@@ -40,24 +30,7 @@ interface AppState {
   throwBoolean: boolean;
 }
 
-interface PlanetDetailsResponse {
-  result: {
-    properties: PlanetProperties;
-    uid: string;
-  };
-}
-
-interface PlanetDetailsResponseSearch {
-  result: [];
-}
-
-interface PlanetDetailsResponseSearchSolo {
-  uid: string;
-  properties: PlanetProperties;
-}
-
 class App extends React.Component<object, AppState> {
-  apiUrl: string = "https://swapi.tech/api/planets";
   localStorageKey: string = "starWarsQuery";
 
   constructor(props: object) {
@@ -80,67 +53,23 @@ class App extends React.Component<object, AppState> {
   };
 
   fetchPlanets = async (searchQuery: string = "") => {
+    let errorMessage = "Unknown error";
     this.setState({ isLoading: true, error: null });
-    let url: string;
-    let planets: Planet[] = [];
-    if (searchQuery) {
-      url = this.apiUrl + "?name=" + encodeURIComponent(searchQuery);
-      const listResponse = await fetch(url);
-      if (!listResponse.ok) {
-        throw new Error("Error in request");
+    try {
+      const planets = await PlanetApi.fetchPlanets(searchQuery);
+      this.setState({ searchResults: planets, isLoading: false });
+    } catch (error) {
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
       }
-      const listData: PlanetDetailsResponseSearch = await listResponse.json();
-      if (listData.result) {
-        console.log(listData.result);
-      }
-      planets = listData.result.map(
-        (planet: PlanetDetailsResponseSearchSolo) => {
-          return {
-            uid: planet.uid,
-            name: planet.properties.name,
-            properties: {
-              diameter: planet.properties.diameter,
-              rotation_period: planet.properties.rotation_period,
-              orbital_period: planet.properties.orbital_period,
-              population: planet.properties.population,
-              climate: planet.properties.climate,
-              terrain: planet.properties.terrain,
-            },
-          };
-        },
-      );
-    } else {
-      url = this.apiUrl;
-      const listResponse = await fetch(url);
-      const listData: PlanetsListResponse = await listResponse.json();
-
-      for (const planet of listData.results) {
-        const detailsResponse = await fetch(planet.url);
-        if (!detailsResponse.ok) {
-          throw new Error(`Failed`);
-        }
-
-        const detailsData: PlanetDetailsResponse = await detailsResponse.json();
-        planets.push({
-          uid: detailsData.result.uid,
-          name: detailsData.result.properties.name,
-          properties: {
-            name: detailsData.result.properties.name,
-            diameter: detailsData.result.properties.diameter,
-            rotation_period: detailsData.result.properties.rotation_period,
-            orbital_period: detailsData.result.properties.orbital_period,
-            population: detailsData.result.properties.population,
-            climate: detailsData.result.properties.climate,
-            terrain: detailsData.result.properties.terrain,
-          },
-        });
-      }
+      this.setState({ error: errorMessage, isLoading: false });
     }
-    this.setState({ searchResults: planets, isLoading: false });
   };
 
   handleSearch = () => {
-    localStorage.setItem(this.localStorageKey, this.state.inputValue);
+    localStorage.setItem(this.localStorageKey, this.state.inputValue.trim());
     this.fetchPlanets(this.state.inputValue);
   };
 
@@ -163,9 +92,11 @@ class App extends React.Component<object, AppState> {
     }
 
     return (
-      <div className="app-container">
+      <div className="app-container" data-testid="app">
         <h1 className="title">Star Wars Planets</h1>
-
+        {this.state.error ? (
+          <div data-testid="error-message">{this.state.error}</div>
+        ) : null}
         <div className="search-container">
           <Input value={inputValue} onChange={this.handleInputChange} />
           <Button onClick={this.handleSearch}>{"Search"}</Button>

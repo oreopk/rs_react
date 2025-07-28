@@ -1,9 +1,14 @@
 import { screen, render } from "@testing-library/react";
-import App from "../App";
+import MainPage from "../MainPage";
+import { BrowserRouter as Router } from "react-router-dom";
 
 describe("App tests render", () => {
   test("should render the title", () => {
-    render(<App />);
+    render(
+      <Router>
+        <MainPage />
+      </Router>,
+    );
 
     expect(
       screen.getByRole("heading", {

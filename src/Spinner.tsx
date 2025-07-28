@@ -1,13 +1,11 @@
 import React from "react";
 
-class Spinner extends React.Component {
-  render() {
-    return (
-      <div className="spinner-container">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
+function Spinner(): React.ReactElement {
+  return (
+    <div className="spinner-container">
+      <div className="spinner"></div>
+    </div>
+  );
 }
 
 export default Spinner;

@@ -4,16 +4,8 @@ interface InputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-class Input extends React.Component<InputProps> {
-  render() {
-    return (
-      <input
-        type="text"
-        value={this.props.value}
-        onChange={this.props.onChange}
-      />
-    );
-  }
+function Input({ value, onChange }: InputProps): React.ReactElement {
+  return <input type="text" value={value} onChange={onChange} />;
 }
 
 export default Input;

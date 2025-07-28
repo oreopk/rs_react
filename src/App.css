@@ -104,6 +104,33 @@ input {
   color: #aaa;
 }
 
+.about {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+.about-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.rs_link {
+  font-size: 1.5rem;
+  color: #a0910f;
+  text-decoration: none;
+}
+
+.rs_link:hover {
+  font-size: 1.9rem;
+  color: #f0d806;
+  text-decoration: none;
+}
+
 .prop_planet {
   font-weight: bold;
   color: #fdfdfd;

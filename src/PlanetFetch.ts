@@ -35,7 +35,11 @@ interface PlanetDetailsResponseSearch {
   result: [];
 }
 
-async function fetchData<Planets>(searchQuery: string): Promise<Planets> {
+interface PlanetsCountResponse {
+  total_records: number;
+}
+
+async function fetchData<T>(searchQuery: string): Promise<T> {
   const response = await fetch(searchQuery);
   if (!response.ok) {
     throw new Error("Error in request");
@@ -63,16 +67,26 @@ const ArrayToPlanet = (data: {
 };
 
 export const PlanetApi = {
-  async fetchPlanets(searchQuery: string = "") {
-    const apiUrl: string = "https://swapi.tech/api/planets";
+  async fetchPlanets(searchQuery: string = "", currentPage: number = 1) {
     let url: string;
     let planets: Planet[] = [];
+    let count;
     if (searchQuery) {
-      url = apiUrl + "?name=" + encodeURIComponent(searchQuery.trim());
+      url =
+        "https://swapi.tech/api/planets" +
+        "?name=" +
+        encodeURIComponent(searchQuery.trim());
       const listData = await fetchData<PlanetDetailsResponseSearch>(url);
       planets = listData.result.map((planet) => ArrayToPlanet(planet));
+      count = planets.length;
     } else {
-      const listData = await fetchData<PlanetsListResponse>(apiUrl);
+      const Data = await fetchData<PlanetsCountResponse>(
+        `https://swapi.tech/api/planets?page=NaN&limit=NaN`,
+      );
+      count = Data.total_records;
+      const listData = await fetchData<PlanetsListResponse>(
+        `https://swapi.tech/api/planets?page=${currentPage}&limit=10`,
+      );
       const planetsDetails = await Promise.all(
         listData.results.map((item) =>
           fetchData<PlanetDetailsResponse>(item.url),
@@ -80,6 +94,6 @@ export const PlanetApi = {
       );
       planets = planetsDetails.map((detail) => ArrayToPlanet(detail.result));
     }
-    return planets;
+    return { planets, count };
   },
 };

@@ -27,20 +27,29 @@ interface PlanetProperties {
   terrain: string;
 }
 
-const mockPlanet: Planet[] = [
-  {
-    name: "Tatooine",
-    properties: {
+interface fetchData {
+  planets: Planet[];
+  count: number;
+}
+
+const mockPlanet: fetchData = {
+  planets: [
+    {
       name: "Tatooine",
-      diameter: "10465",
-      rotation_period: "23",
-      orbital_period: "304",
-      population: "200000",
-      climate: "arid",
-      terrain: "desert",
+      properties: {
+        name: "Tatooine",
+        diameter: "10465",
+        rotation_period: "23",
+        orbital_period: "304",
+        population: "200000",
+        climate: "arid",
+        terrain: "desert",
+      },
     },
-  },
-];
+  ],
+  count: 1,
+};
+
 describe("Planet Cards Rendering", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -64,9 +73,9 @@ describe("Planet Cards Rendering", () => {
     const cards = await screen.findAllByRole("article");
     expect(cards).toHaveLength(1);
     expect(screen.getByRole("article")).toBeInTheDocument();
-    expect(screen.getByText(mockPlanet[0].name)).toBeInTheDocument();
+    expect(screen.getByText(mockPlanet.planets[0].name)).toBeInTheDocument();
     expect(
-      screen.getByText(mockPlanet[0].properties.diameter),
+      screen.getByText(mockPlanet.planets[0].properties.diameter),
     ).toBeInTheDocument();
   });
 
@@ -78,9 +87,9 @@ describe("Planet Cards Rendering", () => {
       </Router>,
     );
     expect(await screen.findByRole("article")).toBeInTheDocument();
-    expect(screen.getByText(mockPlanet[0].name)).toBeInTheDocument();
+    expect(screen.getByText(mockPlanet.planets[0].name)).toBeInTheDocument();
     expect(
-      screen.getByText(mockPlanet[0].properties.diameter),
+      screen.getByText(mockPlanet.planets[0].properties.diameter),
     ).toBeInTheDocument();
   });
   test("should handle fetch errors", async () => {

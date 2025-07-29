@@ -1,51 +1,46 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import ErrorButton from "./ErrorButton";
-import Button from "./Button";
-import Input from "./Input";
-import PlanetCard from "./PlanetCard";
-import Spinner from "./Spinner";
 import Header from "./Header";
 import { PlanetApi } from "./PlanetFetch";
-
-interface PlanetProperties {
-  name?: string;
-  diameter: string;
-  rotation_period: string;
-  orbital_period: string;
-  population: string;
-  climate: string;
-  terrain: string;
-}
-
-interface Planet {
-  uid?: string;
-  name?: string;
-  properties: PlanetProperties;
-}
+import Planets from "./Planets";
+import Button from "./Button";
+import Input from "./Input";
+import type { Planet } from "./types";
+import Pagination from "./Pagination";
 
 function MainPage(): React.ReactElement {
   const localStorageKey: string = "starWarsQuery";
 
-  const [inputValue, setInputValue] = useState<string>(
-    localStorage.getItem(localStorageKey) || "",
-  );
-  const [searchResults, setSearchResults] = useState<Planet[]>([]);
+  const [searchPlanets, setPlanets] = useState<Planet[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [errorBoolean, setErrorBoolean] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPlanets, setTotalPlanets] = useState(0);
+  const [planetsPerPage] = useState(10);
 
-  function triggerError() {
-    setErrorBoolean(true);
-  }
+  useEffect(() => {
+    setInputValue(localStorage.getItem(localStorageKey) || "");
+    fetchPlanets(inputValue);
+  }, [currentPage]);
 
   const fetchPlanets = async (searchQuery: string = "") => {
     let errorMessage = "Unknown error";
     setIsLoading(true);
     setError(null);
     try {
-      const planets = await PlanetApi.fetchPlanets(searchQuery);
-      setSearchResults(planets);
+      const planets = await PlanetApi.fetchPlanets(searchQuery, currentPage);
+      setTotalPlanets(planets.count);
+      if (searchQuery) {
+        const firstPlanetsIndex = (currentPage - 1) * planetsPerPage;
+        const lastPlanetsIndex = firstPlanetsIndex + planetsPerPage;
+        const currentPlanets = planets.planets.slice(
+          firstPlanetsIndex,
+          lastPlanetsIndex,
+        );
+        setPlanets(currentPlanets);
+      } else {
+        setPlanets(planets.planets);
+      }
     } catch (error) {
       if (error instanceof Error) {
         errorMessage = error.message;
@@ -58,6 +53,19 @@ function MainPage(): React.ReactElement {
     }
   };
 
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
+  const [inputValue, setInputValue] = useState<string>(
+    localStorage.getItem(localStorageKey) || "",
+  );
+
+  const [error, setError] = useState<string | null>(null);
+  const [errorBoolean, setErrorBoolean] = useState<boolean>(false);
+
+  function triggerError() {
+    setErrorBoolean(true);
+  }
+
   function handleSearch() {
     localStorage.setItem(localStorageKey, inputValue.trim());
     fetchPlanets(inputValue);
@@ -66,11 +74,6 @@ function MainPage(): React.ReactElement {
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
   }
-
-  useEffect(() => {
-    setInputValue(localStorage.getItem(localStorageKey) || "");
-    fetchPlanets(inputValue);
-  }, []);
 
   if (errorBoolean) {
     throw new Error("Test error");
@@ -85,21 +88,17 @@ function MainPage(): React.ReactElement {
         <Input value={inputValue} onChange={handleInputChange} />
         <Button onClick={handleSearch}>{"Search"}</Button>
       </div>
-      {isLoading ? (
-        <Spinner />
-      ) : (
-        <div className="results-container">
-          {inputValue.trim() !== "" && searchResults.length === 0 ? (
-            <div className="nothing">Nothing</div>
-          ) : (
-            <div className="results-grid">
-              {searchResults.map((planet: Planet) => (
-                <PlanetCard key={planet.uid} planet={planet} />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      <Planets
+        searchPlanets={searchPlanets}
+        isLoading={isLoading}
+        inputValue={inputValue}
+      />
+      <Pagination
+        planetsPerPage={planetsPerPage}
+        totalPlanets={totalPlanets}
+        paginate={paginate}
+        currentPage={currentPage}
+      ></Pagination>
       <ErrorButton onClick={triggerError} />
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import "./App.css";
 import ErrorButton from "./ErrorButton";
 import Header from "./Header";
@@ -8,20 +9,26 @@ import Button from "./Button";
 import Input from "./Input";
 import type { Planet } from "./types";
 import Pagination from "./Pagination";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 function MainPage(): React.ReactElement {
   const localStorageKey: string = "starWarsQuery";
-
+  const [inputValue, setInputValue] = useLocalStorage(localStorageKey, "");
   const [searchPlanets, setPlanets] = useState<Planet[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPlanets, setTotalPlanets] = useState(0);
   const [planetsPerPage] = useState(10);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
+    const page = parseInt(searchParams.get("page") || "1");
+    if (page !== currentPage) {
+      setCurrentPage(page);
+    }
     setInputValue(localStorage.getItem(localStorageKey) || "");
     fetchPlanets(inputValue);
-  }, [currentPage]);
+  }, [searchParams]);
 
   const fetchPlanets = async (searchQuery: string = "") => {
     let errorMessage = "Unknown error";
@@ -53,11 +60,10 @@ function MainPage(): React.ReactElement {
     }
   };
 
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  const [inputValue, setInputValue] = useState<string>(
-    localStorage.getItem(localStorageKey) || "",
-  );
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    setSearchParams({ page: pageNumber.toString() });
+  };
 
   const [error, setError] = useState<string | null>(null);
   const [errorBoolean, setErrorBoolean] = useState<boolean>(false);
@@ -67,7 +73,6 @@ function MainPage(): React.ReactElement {
   }
 
   function handleSearch() {
-    localStorage.setItem(localStorageKey, inputValue.trim());
     fetchPlanets(inputValue);
   }
 

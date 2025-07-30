@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import "./Pagination.css";
 
 interface PaginationProps {
@@ -20,14 +21,15 @@ export default function Pagination({
   return (
     <div className="pagination-container">
       {pageNumbers.map((number) => (
-        <button
+        <NavLink
+          to={`?page=${number}`}
           className={`pagination-button ${number === currentPage ? "active" : ""}`}
           key={number}
           type="button"
           onClick={() => paginate(number)}
         >
           {number}
-        </button>
+        </NavLink>
       ))}
     </div>
   );

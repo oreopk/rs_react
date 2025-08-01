@@ -1,24 +1,4 @@
-interface Planet {
-  uid?: string;
-  name?: string;
-  properties: PlanetProperties;
-}
-
-interface PlanetProperties {
-  name?: string;
-  diameter: string;
-  rotation_period: string;
-  orbital_period: string;
-  population: string;
-  climate: string;
-  terrain: string;
-}
-
-interface PlanetsListItem {
-  uid: string;
-  name: string;
-  url: string;
-}
+import type { PlanetProperties, PlanetsListItem } from "./types";
 
 interface PlanetsListResponse {
   results: PlanetsListItem[];
@@ -35,10 +15,6 @@ interface PlanetDetailsResponseSearch {
   result: [];
 }
 
-interface PlanetsCountResponse {
-  total_records: number;
-}
-
 async function fetchData<T>(searchQuery: string): Promise<T> {
   const response = await fetch(searchQuery);
   if (!response.ok) {
@@ -46,30 +22,53 @@ async function fetchData<T>(searchQuery: string): Promise<T> {
   }
   return response.json();
 }
-
-const ArrayToPlanet = (data: {
+const ArrayToPlanet1 = (data: {
   uid: string;
-  properties: PlanetProperties;
-}): Planet => {
+  name: string;
+  url: string;
+}): PlanetsListItem => {
   return {
     uid: data.uid,
+    name: data.name,
+    url: data.url,
+  };
+};
+
+const ArrayToPlanet2 = (data: {
+  properties: {
+    uid: string;
+    name: string;
+    url: string;
+  };
+}): PlanetsListItem => {
+  console.log(data.properties);
+  return {
+    uid: data.properties.uid,
     name: data.properties.name,
-    properties: {
-      name: data.properties.name,
-      diameter: data.properties.diameter,
-      rotation_period: data.properties.rotation_period,
-      orbital_period: data.properties.orbital_period,
-      population: data.properties.population,
-      climate: data.properties.climate,
-      terrain: data.properties.terrain,
-    },
+    url: data.properties.url,
+  };
+};
+
+const ToPlanet = (data: { properties: PlanetProperties }): PlanetProperties => {
+  return {
+    name: data.properties.name,
+    diameter: data.properties.diameter,
+    rotation_period: data.properties.rotation_period,
+    orbital_period: data.properties.orbital_period,
+    population: data.properties.population,
+    climate: data.properties.climate,
+    terrain: data.properties.terrain,
+    gravity: data.properties.gravity,
   };
 };
 
 export const PlanetApi = {
-  async fetchPlanets(searchQuery: string = "", currentPage: number = 1) {
+  fetchPlanets: async function (
+    searchQuery: string = "",
+    currentPage: number = 1,
+  ) {
     let url: string;
-    let planets: Planet[] = [];
+    let planets = [];
     let count;
     if (searchQuery) {
       url =
@@ -77,23 +76,20 @@ export const PlanetApi = {
         "?name=" +
         encodeURIComponent(searchQuery.trim());
       const listData = await fetchData<PlanetDetailsResponseSearch>(url);
-      planets = listData.result.map((planet) => ArrayToPlanet(planet));
+      planets = listData.result.map((planet) => ArrayToPlanet2(planet));
       count = planets.length;
     } else {
-      const Data = await fetchData<PlanetsCountResponse>(
-        `https://swapi.tech/api/planets?page=NaN&limit=NaN`,
-      );
-      count = Data.total_records;
       const listData = await fetchData<PlanetsListResponse>(
-        `https://swapi.tech/api/planets?page=${currentPage}&limit=10`,
+        `https://swapi.tech/api/planets?page=${currentPage}&limit=NaN`,
       );
-      const planetsDetails = await Promise.all(
-        listData.results.map((item) =>
-          fetchData<PlanetDetailsResponse>(item.url),
-        ),
-      );
-      planets = planetsDetails.map((detail) => ArrayToPlanet(detail.result));
+      planets = listData.results.map((detail) => ArrayToPlanet1(detail));
+      count = planets.length;
     }
     return { planets, count };
+  },
+
+  fetchPlanetDetail: async function (planet_url: string = "") {
+    const planetDetails = await fetchData<PlanetDetailsResponse>(planet_url);
+    return ToPlanet(planetDetails.result);
   },
 };

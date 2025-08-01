@@ -1,20 +1,22 @@
-import PlanetCard from "./PlanetCard";
 import Spinner from "./Spinner";
-import type { Planet } from "./types";
+import type { PlanetsListItem } from "./types";
+import PlanetMiniCard from "./PlanetMiniCard";
 
 interface PlanetsProps {
-  searchPlanets: Planet[];
+  searchPlanets: PlanetsListItem[];
   isLoading: boolean;
   inputValue: string;
+  onPlanetSelect: (url: string) => void;
 }
 
 export default function Planets({
   searchPlanets,
   isLoading,
   inputValue,
+  onPlanetSelect,
 }: PlanetsProps) {
   return (
-    <div>
+    <>
       {isLoading ? (
         <Spinner />
       ) : (
@@ -23,13 +25,17 @@ export default function Planets({
             <div className="nothing">Nothing</div>
           ) : (
             <div className="results-grid">
-              {searchPlanets.map((planet: Planet) => (
-                <PlanetCard key={planet.uid} planet={planet} />
+              {searchPlanets.map((planet: PlanetsListItem) => (
+                <PlanetMiniCard
+                  key={planet.uid}
+                  planet={planet}
+                  onPlanetSelect={onPlanetSelect}
+                />
               ))}
             </div>
           )}
         </div>
       )}
-    </div>
+    </>
   );
 }

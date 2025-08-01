@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import MainPage from "../MainPage";
 import { PlanetApi } from "../PlanetFetch";
 import { BrowserRouter as Router } from "react-router-dom";
+import type { PlanetsListItem } from "../types";
 
 vi.mock("../PlanetFetch", () => ({
   PlanetApi: {
@@ -11,24 +12,8 @@ vi.mock("../PlanetFetch", () => ({
   },
 }));
 
-interface Planet {
-  uid?: string;
-  name: string;
-  properties: PlanetProperties;
-}
-
-interface PlanetProperties {
-  name?: string;
-  diameter: string;
-  rotation_period: string;
-  orbital_period: string;
-  population: string;
-  climate: string;
-  terrain: string;
-}
-
 interface fetchData {
-  planets: Planet[];
+  planets: PlanetsListItem[];
   count: number;
 }
 
@@ -36,15 +21,8 @@ const mockPlanet: fetchData = {
   planets: [
     {
       name: "Tatooine",
-      properties: {
-        name: "Tatooine",
-        diameter: "10465",
-        rotation_period: "23",
-        orbital_period: "304",
-        population: "200000",
-        climate: "arid",
-        terrain: "desert",
-      },
+      url: "",
+      uid: "1",
     },
   ],
   count: 1,
@@ -74,9 +52,6 @@ describe("Planet Cards Rendering", () => {
     expect(cards).toHaveLength(1);
     expect(screen.getByRole("article")).toBeInTheDocument();
     expect(screen.getByText(mockPlanet.planets[0].name)).toBeInTheDocument();
-    expect(
-      screen.getByText(mockPlanet.planets[0].properties.diameter),
-    ).toBeInTheDocument();
   });
 
   test("should render all planet cards", async () => {
@@ -88,9 +63,6 @@ describe("Planet Cards Rendering", () => {
     );
     expect(await screen.findByRole("article")).toBeInTheDocument();
     expect(screen.getByText(mockPlanet.planets[0].name)).toBeInTheDocument();
-    expect(
-      screen.getByText(mockPlanet.planets[0].properties.diameter),
-    ).toBeInTheDocument();
   });
   test("should handle fetch errors", async () => {
     vi.mocked(PlanetApi.fetchPlanets).mockRejectedValueOnce(

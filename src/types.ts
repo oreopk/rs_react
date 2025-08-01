@@ -6,10 +6,17 @@ export interface PlanetProperties {
   population: string;
   climate: string;
   terrain: string;
+  gravity: string;
 }
 
 export interface Planet {
   uid?: string;
   name?: string;
   properties: PlanetProperties;
+}
+
+export interface PlanetsListItem {
+  uid: string;
+  name: string;
+  url: string;
 }

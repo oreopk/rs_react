@@ -51,6 +51,7 @@ input {
   background-color: #2a2a2a;
   border-radius: 8px;
   padding: 20px;
+  min-width: 50%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -64,15 +65,27 @@ input {
 .results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 20px;
+  gap: 10px;
 }
 
 .planet-card {
   background-color: #333;
   border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 10px 20px 10px 20px;
   transition: transform 0.3s;
+}
+
+.planet-details {
+  background-color: #333;
+  border-radius: 8px;
+  padding: 20px;
+  width: 50%;
+}
+
+.main-container {
+  display: flex;
+  flex-grow: 1;
+  gap: 1%;
 }
 
 .planet-card:hover {
@@ -82,10 +95,9 @@ input {
 .planet-name {
   color: #ffe81f;
   margin-top: 0;
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   font-size: 1.5rem;
   border-bottom: 1px solid #444;
-  padding-bottom: 10px;
 }
 
 .planet-details {
@@ -140,7 +152,10 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: auto;
+  margin-bottom: auto;
   height: 200px;
+  width: 100%;
 }
 
 .spinner {

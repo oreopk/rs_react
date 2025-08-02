@@ -6,14 +6,12 @@ interface PlanetsProps {
   searchPlanets: PlanetsListItem[];
   isLoading: boolean;
   inputValue: string;
-  onPlanetSelect: (url: string) => void;
 }
 
 export default function Planets({
   searchPlanets,
   isLoading,
   inputValue,
-  onPlanetSelect,
 }: PlanetsProps) {
   return (
     <>
@@ -26,11 +24,7 @@ export default function Planets({
           ) : (
             <div className="results-grid">
               {searchPlanets.map((planet: PlanetsListItem) => (
-                <PlanetMiniCard
-                  key={planet.uid}
-                  planet={planet}
-                  onPlanetSelect={onPlanetSelect}
-                />
+                <PlanetMiniCard key={planet.uid} planet={planet} />
               ))}
             </div>
           )}

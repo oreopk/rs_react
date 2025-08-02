@@ -1,20 +1,22 @@
 import { NavLink } from "react-router-dom";
 import "./Pagination.css";
+import { useParams } from "react-router-dom";
 
 interface PaginationProps {
   planetsPerPage: number;
   totalPlanets: number;
-  paginate: (pageNumber: number) => void;
   currentPage: number;
+  searchQuery: string;
 }
 
 export default function Pagination({
   planetsPerPage,
   totalPlanets,
-  paginate,
   currentPage,
+  searchQuery,
 }: PaginationProps): React.ReactElement {
   const pageNumbers = [];
+  const { planetId } = useParams();
   for (let i = 1; i <= Math.ceil(totalPlanets / planetsPerPage); i++) {
     pageNumbers.push(i);
   }
@@ -22,11 +24,10 @@ export default function Pagination({
     <div className="pagination-container">
       {pageNumbers.map((number) => (
         <NavLink
-          to={`?page=${number}`}
+          to={`/${number}${planetId ? `/${planetId}` : ""}?search=${searchQuery}`}
           className={`pagination-button ${number === currentPage ? "active" : ""}`}
           key={number}
           type="button"
-          onClick={() => paginate(number)}
         >
           {number}
         </NavLink>

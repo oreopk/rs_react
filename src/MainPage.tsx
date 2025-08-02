@@ -1,38 +1,44 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import {
+  useParams,
+  useSearchParams,
+  Outlet,
+  useNavigate,
+} from "react-router-dom";
 import "./App.css";
-import Spinner from "./Spinner";
 import ErrorButton from "./ErrorButton";
 import Header from "./Header";
 import { PlanetApi } from "./PlanetFetch";
 import Planets from "./Planets";
 import Button from "./Button";
 import Input from "./Input";
-import type { PlanetProperties, PlanetsListItem } from "./types";
+import type { PlanetsListItem } from "./types";
 import Pagination from "./Pagination";
 import useLocalStorage from "./hooks/useLocalStorage";
-import PlanetCard from "./PlanetCard";
+
 const planetsPerPage = 10;
+
 function MainPage(): React.ReactElement {
+  const navigate = useNavigate();
+  const { pageNumber } = useParams();
+  const initialRender = useRef(true);
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search") || "";
+  const currentPage = parseInt(pageNumber || "1", 10);
   const localStorageKey: string = "starWarsQuery";
-  const [inputValue, setInputValue] = useLocalStorage(localStorageKey, "");
-  const [searchValue, setsearchValue] = useLocalStorage(localStorageKey, "");
+  const [inputValue, setInputValue] = useLocalStorage(
+    localStorageKey,
+    searchQuery,
+  );
   const [searchPlanets, setPlanets] = useState<PlanetsListItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoadingDetail, setIsLoadingDetail] = useState<boolean>(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalPlanets, setTotalPlanets] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedPlanet, setSelectedPlanet] = useState<PlanetProperties | null>(
-    null,
-  );
-  const [showPlanetDetails, setShowPlanetDetails] = useState(false);
   const getPlanets = useCallback(async () => {
     let errorMessage = "Unknown error";
     setIsLoading(true);
     setError(null);
     try {
-      const planets = await PlanetApi.fetchPlanets(searchValue, currentPage);
+      const planets = await PlanetApi.fetchPlanets(searchQuery, currentPage);
       const firstPlanetsIndex = (currentPage - 1) * planetsPerPage;
       const lastPlanetsIndex = firstPlanetsIndex + planetsPerPage;
       const currentPlanets = planets.planets.slice(
@@ -51,45 +57,20 @@ function MainPage(): React.ReactElement {
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, searchValue]);
+  }, [currentPage, searchQuery]);
 
   useEffect(() => {
-    setShowPlanetDetails(false);
-    getPlanets();
-  }, [getPlanets]);
-
-  useEffect(() => {
-    setSearchParams({ page: currentPage.toString() });
-  }, [currentPage, setSearchParams]);
-
-  useEffect(() => {
-    const page = parseInt(searchParams.get("page") || "1");
-    setCurrentPage(page);
-  }, [searchParams]);
-
-  const getPlanetSelect = async (planetUrl: string) => {
-    let errorMessage = "Unknown error";
-    try {
-      setIsLoadingDetail(true);
-      const planetDetails = await PlanetApi.fetchPlanetDetail(planetUrl);
-      setSelectedPlanet(planetDetails);
-      setShowPlanetDetails(true);
-    } catch (error) {
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === "string") {
-        errorMessage = error;
+    if (initialRender.current) {
+      initialRender.current = false;
+      if (searchQuery && searchQuery !== inputValue) {
+        setInputValue(searchQuery);
       }
-      setError(errorMessage);
-    } finally {
-      setIsLoadingDetail(false);
     }
-  };
+  }, [inputValue, searchQuery, setInputValue]);
 
-  const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-    setSearchParams({ page: pageNumber.toString() });
-  };
+  useEffect(() => {
+    getPlanets();
+  }, [getPlanets, searchQuery]);
 
   const [error, setError] = useState<string | null>(null);
   const [errorBoolean, setErrorBoolean] = useState<boolean>(false);
@@ -99,8 +80,7 @@ function MainPage(): React.ReactElement {
   }
 
   function handleSearch() {
-    setCurrentPage(1);
-    setsearchValue(inputValue);
+    navigate(`/1?search=${encodeURIComponent(inputValue)}`);
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -127,21 +107,15 @@ function MainPage(): React.ReactElement {
           searchPlanets={searchPlanets}
           isLoading={isLoading}
           inputValue={inputValue}
-          onPlanetSelect={getPlanetSelect}
         />
-        {isLoadingDetail ? (
-          <Spinner />
-        ) : (
-          showPlanetDetails &&
-          selectedPlanet && <PlanetCard planet={selectedPlanet} />
-        )}
+        <Outlet />
       </div>
       {isLoading ? null : (
         <Pagination
           planetsPerPage={planetsPerPage}
           totalPlanets={totalPlanets}
-          paginate={paginate}
           currentPage={currentPage}
+          searchQuery={searchQuery}
         ></Pagination>
       )}
       <ErrorButton onClick={triggerError} />

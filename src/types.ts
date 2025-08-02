@@ -10,7 +10,7 @@ export interface PlanetProperties {
 }
 
 export interface Planet {
-  uid?: string;
+  uid: string;
   name?: string;
   properties: PlanetProperties;
 }

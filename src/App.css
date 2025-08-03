@@ -1,3 +1,11 @@
+body {
+  background-color: white;
+}
+
+body.dark {
+  background-color: #2a2a2a;
+}
+
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -6,11 +14,23 @@
   padding-right: 100px;
 }
 
+.light {
+  background-color: white;
+}
+
+.dark {
+  background-color: #2a2a2a;
+}
+
 .title {
   text-align: center;
   color: #000000;
   margin-bottom: 30px;
   font-size: 2.5rem;
+}
+
+.title.dark {
+  color: #ffffff;
 }
 
 .search-container {
@@ -31,6 +51,9 @@ input {
   background-color: #141313;
   color: white;
   font-size: 1rem;
+}
+.search-container.dark {
+  background-color: #0e0e0e;
 }
 
 .search-container button {

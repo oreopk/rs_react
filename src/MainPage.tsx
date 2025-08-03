@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import {
   useParams,
   useSearchParams,
@@ -15,6 +21,7 @@ import Input from "./Input";
 import type { PlanetsListItem } from "./types";
 import Pagination from "./Pagination";
 import useLocalStorage from "./hooks/useLocalStorage";
+import { ThemeContext } from "./ThemeContext";
 
 const planetsPerPage = 10;
 
@@ -33,6 +40,9 @@ function MainPage(): React.ReactElement {
   const [searchPlanets, setPlanets] = useState<PlanetsListItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [totalPlanets, setTotalPlanets] = useState(0);
+
+  const { theme } = useContext(ThemeContext) || {};
+
   const getPlanets = useCallback(async () => {
     let errorMessage = "Unknown error";
     setIsLoading(true);
@@ -92,13 +102,13 @@ function MainPage(): React.ReactElement {
   }
 
   return (
-    <div className="app-container" data-testid="app">
+    <div className={`app-container ${theme}`} data-testid="app">
       <Header></Header>
-      <h1 className="title">Star Wars Planets</h1>
+      <h1 className={`title ${theme}`}>Star Wars Planets</h1>
 
       {error ? <div data-testid="error-message">{error}</div> : null}
 
-      <div className="search-container">
+      <div className={`search-container ${theme}`}>
         <Input value={inputValue} onChange={handleInputChange} />
         <Button onClick={handleSearch}>{"Search"}</Button>
       </div>

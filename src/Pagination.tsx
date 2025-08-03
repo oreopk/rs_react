@@ -24,7 +24,7 @@ export default function Pagination({
     <div className="pagination-container">
       {pageNumbers.map((number) => (
         <NavLink
-          to={`/${number}${planetId ? `/${planetId}` : ""}?search=${searchQuery}`}
+          to={`/list/${number}${planetId ? `/${planetId}` : ""}?search=${searchQuery}`}
           className={`pagination-button ${number === currentPage ? "active" : ""}`}
           key={number}
           type="button"

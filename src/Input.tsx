@@ -1,11 +1,21 @@
 import React from "react";
+import { useContext } from "react";
+import { ThemeContext } from "./ThemeContext";
 
 interface InputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 function Input({ value, onChange }: InputProps): React.ReactElement {
-  return <input type="text" value={value} onChange={onChange} />;
+  const { theme } = useContext(ThemeContext) || {};
+  return (
+    <input
+      className={`${theme}`}
+      type="text"
+      value={value}
+      onChange={onChange}
+    />
+  );
 }
 
 export default Input;

@@ -18,9 +18,9 @@ function PlanetMiniCard({ planet }: PlanetMiniCardProps): React.ReactElement {
       role="article"
       onClick={() => {
         if (!pageNumber) {
-          navigate(`/1/${id}?search=${searchQuery}`);
+          navigate(`/list/1/${id}?search=${searchQuery}`);
         } else {
-          navigate(`/${pageNumber}/${id}?search=${searchQuery}`);
+          navigate(`/list/${pageNumber}/${id}?search=${searchQuery}`);
         }
       }}
     >

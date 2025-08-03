@@ -80,7 +80,7 @@ function MainPage(): React.ReactElement {
   }
 
   function handleSearch() {
-    navigate(`/1?search=${encodeURIComponent(inputValue)}`);
+    navigate(`/list/1?search=${encodeURIComponent(inputValue)}`);
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {

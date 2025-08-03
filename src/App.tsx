@@ -12,7 +12,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainPage />} />
-          <Route path="/:pageNumber" element={<MainPage />}>
+          <Route path="/list/:pageNumber" element={<MainPage />}>
             <Route path=":planetId" element={<PlanetCard />} />
           </Route>
           <Route path="/about" element={<About />} />

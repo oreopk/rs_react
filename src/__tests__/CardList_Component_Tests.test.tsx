@@ -5,6 +5,8 @@ import MainPage from "../MainPage";
 import { PlanetApi } from "../PlanetFetch";
 import { BrowserRouter as Router } from "react-router-dom";
 import type { PlanetsListItem } from "../types";
+import { Provider } from "react-redux";
+import { store } from "../store/store";
 
 vi.mock("../PlanetFetch", () => ({
   PlanetApi: {
@@ -37,9 +39,11 @@ describe("Planet Cards Rendering", () => {
     const user = userEvent.setup();
     vi.mocked(PlanetApi.fetchPlanets).mockResolvedValue(mockPlanet);
     render(
-      <Router>
-        <MainPage />
-      </Router>,
+      <Provider store={store}>
+        <Router>
+          <MainPage />
+        </Router>
+      </Provider>,
     );
 
     const inputElement = screen.getByRole("textbox");
@@ -57,9 +61,11 @@ describe("Planet Cards Rendering", () => {
   test("should render all planet cards", async () => {
     vi.mocked(PlanetApi.fetchPlanets).mockResolvedValue(mockPlanet);
     render(
-      <Router>
-        <MainPage />
-      </Router>,
+      <Provider store={store}>
+        <Router>
+          <MainPage />
+        </Router>
+      </Provider>,
     );
     expect(await screen.findByRole("article")).toBeInTheDocument();
     expect(screen.getByText(mockPlanet.planets[0].name)).toBeInTheDocument();
@@ -69,9 +75,11 @@ describe("Planet Cards Rendering", () => {
       new Error("Error in request"),
     );
     render(
-      <Router>
-        <MainPage />
-      </Router>,
+      <Provider store={store}>
+        <Router>
+          <MainPage />
+        </Router>
+      </Provider>,
     );
 
     const error = await screen.findByTestId("error-message");

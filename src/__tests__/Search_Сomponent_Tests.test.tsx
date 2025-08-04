@@ -3,6 +3,8 @@ import { render, screen } from "@testing-library/react";
 import MainPage from "../MainPage";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter as Router } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "../store/store";
 
 describe("Search Component Tests", () => {
   const localStorageMock = {
@@ -16,9 +18,11 @@ describe("Search Component Tests", () => {
 
   test("should render Input and Button elements", () => {
     render(
-      <Router>
-        <MainPage />
-      </Router>,
+      <Provider store={store}>
+        <Router>
+          <MainPage />
+        </Router>
+      </Provider>,
     );
 
     const inputElement = screen.getByRole("textbox");
@@ -38,9 +42,11 @@ describe("Search Component Tests", () => {
       }
     });
     render(
-      <Router>
-        <MainPage />
-      </Router>,
+      <Provider store={store}>
+        <Router>
+          <MainPage />
+        </Router>
+      </Provider>,
     );
     expect(screen.getByRole("textbox")).toHaveValue(testQuery);
     expect(localStorageMock.getItem).toHaveBeenCalledWith("starWarsQuery");
@@ -51,9 +57,12 @@ describe("Search Component Tests", () => {
       return null;
     });
     render(
-      <Router>
-        <MainPage />
-      </Router>,
+      <Provider store={store}>
+        <Router>
+          <MainPage />
+        </Router>
+        ,
+      </Provider>,
     );
     expect(screen.getByRole("textbox")).toHaveValue("");
     expect(localStorageMock.getItem).toHaveBeenCalledWith("starWarsQuery");
@@ -62,9 +71,12 @@ describe("Search Component Tests", () => {
   test("should update input value when typing", async () => {
     const user = userEvent.setup();
     render(
-      <Router>
-        <MainPage />
-      </Router>,
+      <Provider store={store}>
+        <Router>
+          <MainPage />
+        </Router>
+        ,
+      </Provider>,
     );
 
     const inputElement = screen.getByRole("textbox");
@@ -77,9 +89,12 @@ describe("Search Component Tests", () => {
     const user = userEvent.setup();
 
     render(
-      <Router>
-        <MainPage />
-      </Router>,
+      <Provider store={store}>
+        <Router>
+          <MainPage />
+        </Router>
+        ,
+      </Provider>,
     );
 
     const inputElement = screen.getByRole("textbox");
@@ -98,9 +113,12 @@ describe("Search Component Tests", () => {
     const user = userEvent.setup();
 
     render(
-      <Router>
-        <MainPage />
-      </Router>,
+      <Provider store={store}>
+        <Router>
+          <MainPage />
+        </Router>
+        ,
+      </Provider>,
     );
 
     const inputElement = screen.getByRole("textbox");

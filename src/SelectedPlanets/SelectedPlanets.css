@@ -1,0 +1,23 @@
+.selected-planets {
+  position: fixed;
+  bottom: -1000px;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 1rem;
+  z-index: 1000;
+  max-height: 50vh;
+  transition: bottom 0.3s ease;
+}
+
+.selected-planets-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1%;
+}
+
+.selected-planets.visible {
+  bottom: 0px;
+}

@@ -12,8 +12,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./App.css";
-import ErrorButton from "./ErrorButton";
-import Header from "./Header";
+import Header from "./Header/Header";
 import { PlanetApi } from "./PlanetFetch";
 import Planets from "./Planets";
 import Button from "./Button";
@@ -22,7 +21,10 @@ import type { PlanetsListItem } from "./types";
 import Pagination from "./Pagination";
 import useLocalStorage from "./hooks/useLocalStorage";
 import { ThemeContext } from "./ThemeContext";
-
+import { useDispatch } from "react-redux";
+import { addItem, removeItem, stateItems } from "./store/selectedItemsSlice";
+import SelectedPlanets from "./SelectedPlanets/SelectedPlanets.tsx";
+import { useAppSelector } from "./hooks/hooks.ts";
 const planetsPerPage = 10;
 
 function MainPage(): React.ReactElement {
@@ -42,6 +44,18 @@ function MainPage(): React.ReactElement {
   const [totalPlanets, setTotalPlanets] = useState(0);
 
   const { theme } = useContext(ThemeContext) || {};
+
+  const dispatch = useDispatch();
+
+  const selectedItems = useAppSelector(stateItems);
+
+  const toggleItemSelection = (item: PlanetsListItem) => {
+    if (selectedItems.some((selected) => selected.uid === item.uid)) {
+      dispatch(removeItem(item.uid));
+    } else {
+      dispatch(addItem(item));
+    }
+  };
 
   const getPlanets = useCallback(async () => {
     let errorMessage = "Unknown error";
@@ -103,7 +117,7 @@ function MainPage(): React.ReactElement {
 
   return (
     <div className={`app-container ${theme}`} data-testid="app">
-      <Header></Header>
+      <Header handleError={triggerError}></Header>
       <h1 className={`title ${theme}`}>Star Wars Planets</h1>
 
       {error ? <div data-testid="error-message">{error}</div> : null}
@@ -117,6 +131,8 @@ function MainPage(): React.ReactElement {
           searchPlanets={searchPlanets}
           isLoading={isLoading}
           inputValue={inputValue}
+          onItemSelect={toggleItemSelection}
+          selectedItems={selectedItems}
         />
         <Outlet />
       </div>
@@ -128,7 +144,7 @@ function MainPage(): React.ReactElement {
           searchQuery={searchQuery}
         ></Pagination>
       )}
-      <ErrorButton onClick={triggerError} />
+      {!isLoading && <SelectedPlanets />}
     </div>
   );
 }

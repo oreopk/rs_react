@@ -1,8 +1,14 @@
 import { NavLink } from "react-router-dom";
 import "./Header.css";
-import { ThemeContext } from "./ThemeContext";
+import { ThemeContext } from "../ThemeContext";
 import { useContext } from "react";
-function Header() {
+import ErrorButton from "../ErrorButton";
+
+interface HeaderProps {
+  handleError: () => void;
+}
+
+function Header({ handleError }: HeaderProps) {
   const { theme, toggleTheme } = useContext(ThemeContext) || {};
   return (
     <header className={`${theme}`}>
@@ -17,6 +23,7 @@ function Header() {
       <button className="switch_theme_button" onClick={toggleTheme}>
         Switch to {theme === "light" ? "dark" : "light"} mode
       </button>
+      <ErrorButton onClick={handleError} />
     </header>
   );
 }

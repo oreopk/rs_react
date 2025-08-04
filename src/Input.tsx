@@ -10,7 +10,7 @@ function Input({ value, onChange }: InputProps): React.ReactElement {
   const { theme } = useContext(ThemeContext) || {};
   return (
     <input
-      className={`${theme}`}
+      className={`main-input ${theme}`}
       type="text"
       value={value}
       onChange={onChange}

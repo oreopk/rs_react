@@ -11,13 +11,6 @@
   transition: bottom 0.3s ease;
 }
 
-.selected-planets-list {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 1%;
-}
-
 .selected-planets.visible {
   bottom: 0px;
 }

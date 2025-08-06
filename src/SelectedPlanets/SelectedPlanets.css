@@ -14,3 +14,27 @@
 .selected-planets.visible {
   bottom: 0px;
 }
+
+.download_button{
+  align-self: flex-end;
+  background-color: #000000;
+  color: #ffe81f;
+  border: 2px solid #ffe81f;
+  padding: 8px 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 30%;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+.download_button:hover {
+  background-color: #ffe81f;
+  color: #000000;
+  box-shadow: 0 0 10px #ffe81f;
+}
+
+.download_button:active {
+  transform: scale(0.95);
+}

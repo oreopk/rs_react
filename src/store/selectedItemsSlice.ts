@@ -23,10 +23,14 @@ export const selectedItemsSlice = createSlice({
     removeItem: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter((item) => item.uid !== action.payload);
     },
+    clearAllItems: (state) => {
+      state.items = [];
+    },
   },
 });
 
 export const stateItems = (state: RootState) => state.selectedItems.items;
 
-export const { addItem, removeItem } = selectedItemsSlice.actions;
+export const { addItem, removeItem, clearAllItems } =
+  selectedItemsSlice.actions;
 export default selectedItemsSlice.reducer;

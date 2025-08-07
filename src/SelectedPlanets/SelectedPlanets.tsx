@@ -1,6 +1,7 @@
 import { useAppSelector } from "../hooks/hooks.ts";
-import { stateItems } from "../store/selectedItemsSlice.ts";
+import { stateItems, clearAllItems } from "../store/selectedItemsSlice.ts";
 import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import "./SelectedPlanets.css";
 
 export default function SelectedPlanets() {
@@ -8,6 +9,12 @@ export default function SelectedPlanets() {
   const downloadRef = useRef<HTMLAnchorElement>(null);
   const [downloadUrl, setDownloadUrl] = useState("");
   const [filename, setFilename] = useState("");
+
+  const dispatch = useDispatch();
+
+  const handleClearAll = () => {
+    dispatch(clearAllItems());
+  };
 
   function download() {
     const name_column = "id,name,url \r\n";
@@ -35,6 +42,9 @@ export default function SelectedPlanets() {
       <h3>Selected Planets: {selectedItems.length}</h3>
       <button className="download_button" onClick={download}>
         Download
+      </button>
+      <button className="clear_button" onClick={handleClearAll}>
+        Clear All Selected
       </button>
       <a
         ref={downloadRef}

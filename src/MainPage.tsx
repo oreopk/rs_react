@@ -12,7 +12,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./App.css";
-import Header from "./Header/Header";
 import { PlanetApi } from "./PlanetFetch";
 import Planets from "./Planets";
 import Button from "./Button";
@@ -97,11 +96,6 @@ function MainPage(): React.ReactElement {
   }, [getPlanets, searchQuery]);
 
   const [error, setError] = useState<string | null>(null);
-  const [errorBoolean, setErrorBoolean] = useState<boolean>(false);
-
-  function triggerError() {
-    setErrorBoolean(true);
-  }
 
   function handleSearch() {
     navigate(`/list/1?search=${encodeURIComponent(inputValue)}`);
@@ -111,17 +105,10 @@ function MainPage(): React.ReactElement {
     setInputValue(e.target.value);
   }
 
-  if (errorBoolean) {
-    throw new Error("Test error");
-  }
-
   return (
-    <div className={`app-container ${theme}`} data-testid="app">
-      <Header handleError={triggerError}></Header>
+    <>
       <h1 className={`title ${theme}`}>Star Wars Planets</h1>
-
       {error ? <div data-testid="error-message">{error}</div> : null}
-
       <div className={`search-container ${theme}`}>
         <Input value={inputValue} onChange={handleInputChange} />
         <Button onClick={handleSearch}>{"Search"}</Button>
@@ -145,7 +132,7 @@ function MainPage(): React.ReactElement {
         ></Pagination>
       )}
       {!isLoading && <SelectedPlanets />}
-    </div>
+    </>
   );
 }
 

@@ -1,9 +1,7 @@
 import React from "react";
-import Header from "./Header/Header";
 function About(): React.ReactElement {
   return (
     <div className="about">
-      <Header></Header>
       <div className="about-page">
         <h1>Star Wars Planets App</h1>
         <p>The author of the application is Pavel Kozin</p>

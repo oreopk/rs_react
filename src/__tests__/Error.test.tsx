@@ -6,6 +6,7 @@ import userEvent from "@testing-library/user-event";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+import Wrapper from "../Wrapper";
 
 describe("Error component", () => {
   it("should throw error", async () => {
@@ -15,6 +16,7 @@ describe("Error component", () => {
       <Provider store={store}>
         <ErrorBoundary>
           <Router>
+            <Wrapper />
             <MainPage />
           </Router>
         </ErrorBoundary>
@@ -37,6 +39,7 @@ describe("Error component", () => {
       <Provider store={store}>
         <ErrorBoundary>
           <Router>
+            <Wrapper />
             <MainPage />
           </Router>
         </ErrorBoundary>

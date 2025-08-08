@@ -15,7 +15,7 @@
   bottom: 0px;
 }
 
-.download_button{
+.download_button {
   align-self: flex-end;
   background-color: #000000;
   color: #ffe81f;
@@ -39,7 +39,7 @@
   transform: scale(0.95);
 }
 
-.clear_button{
+.clear_button {
   align-self: flex-end;
   background-color: #000000;
   color: #ffe81f;

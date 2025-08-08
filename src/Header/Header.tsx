@@ -4,11 +4,7 @@ import { ThemeContext } from "../ThemeContext";
 import { useContext } from "react";
 import ErrorButton from "../ErrorButton";
 
-interface HeaderProps {
-  handleError: () => void;
-}
-
-function Header({ handleError }: HeaderProps) {
+function Header({ handleError }: { handleError: () => void }) {
   const { theme, toggleTheme } = useContext(ThemeContext) || {};
   return (
     <header className={`${theme}`}>

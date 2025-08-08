@@ -8,6 +8,7 @@ import PlanetCard from "./PlanetCard";
 import { ThemeProvider } from "./ThemeProvider";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+import Wrapper from "./Wrapper";
 
 function App() {
   return (
@@ -16,12 +17,14 @@ function App() {
         <ErrorBoundary>
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<MainPage />} />
-              <Route path="/list/:pageNumber" element={<MainPage />}>
-                <Route path=":planetId" element={<PlanetCard />} />
+              <Route element={<Wrapper />}>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/list/:pageNumber" element={<MainPage />}>
+                  <Route path=":planetId" element={<PlanetCard />} />
+                </Route>
+                <Route path="*" element={<Page404 />} />
               </Route>
-              <Route path="/about" element={<About />} />
-              <Route path="*" element={<Page404 />} />
             </Routes>
           </BrowserRouter>
         </ErrorBoundary>

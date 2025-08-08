@@ -4,17 +4,23 @@ import ErrorBoundary from "../ErrorBoundary";
 import { describe, it, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter as Router } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "../store/store";
+import Wrapper from "../Wrapper";
 
 describe("Error component", () => {
   it("should throw error", async () => {
     const ErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     render(
-      <ErrorBoundary>
-        <Router>
-          <MainPage />
-        </Router>
-      </ErrorBoundary>,
+      <Provider store={store}>
+        <ErrorBoundary>
+          <Router>
+            <Wrapper />
+            <MainPage />
+          </Router>
+        </ErrorBoundary>
+      </Provider>,
     );
 
     const errorButton = screen.getByRole("button", { name: /Error/ });
@@ -30,11 +36,14 @@ describe("Error component", () => {
 
   it("should click reboot button", async () => {
     render(
-      <ErrorBoundary>
-        <Router>
-          <MainPage />
-        </Router>
-      </ErrorBoundary>,
+      <Provider store={store}>
+        <ErrorBoundary>
+          <Router>
+            <Wrapper />
+            <MainPage />
+          </Router>
+        </ErrorBoundary>
+      </Provider>,
     );
 
     const errorButton = screen.getByRole("button", { name: /Error/ });

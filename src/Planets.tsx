@@ -6,6 +6,8 @@ interface PlanetsProps {
   searchPlanets: PlanetsListItem[];
   isLoading: boolean;
   inputValue: string;
+  onItemSelect: (item: PlanetsListItem) => void;
+  selectedItems: PlanetsListItem[];
 }
 
 export default function Planets({

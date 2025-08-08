@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import {
   useParams,
   useSearchParams,
@@ -6,8 +12,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./App.css";
-import ErrorButton from "./ErrorButton";
-import Header from "./Header";
 import { PlanetApi } from "./PlanetFetch";
 import Planets from "./Planets";
 import Button from "./Button";
@@ -15,7 +19,11 @@ import Input from "./Input";
 import type { PlanetsListItem } from "./types";
 import Pagination from "./Pagination";
 import useLocalStorage from "./hooks/useLocalStorage";
-
+import { ThemeContext } from "./ThemeContext";
+import { useDispatch } from "react-redux";
+import { addItem, removeItem, stateItems } from "./store/selectedItemsSlice";
+import SelectedPlanets from "./SelectedPlanets/SelectedPlanets.tsx";
+import { useAppSelector } from "./hooks/hooks.ts";
 const planetsPerPage = 10;
 
 function MainPage(): React.ReactElement {
@@ -33,6 +41,21 @@ function MainPage(): React.ReactElement {
   const [searchPlanets, setPlanets] = useState<PlanetsListItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [totalPlanets, setTotalPlanets] = useState(0);
+
+  const { theme } = useContext(ThemeContext) || {};
+
+  const dispatch = useDispatch();
+
+  const selectedItems = useAppSelector(stateItems);
+
+  const toggleItemSelection = (item: PlanetsListItem) => {
+    if (selectedItems.some((selected) => selected.uid === item.uid)) {
+      dispatch(removeItem(item.uid));
+    } else {
+      dispatch(addItem(item));
+    }
+  };
+
   const getPlanets = useCallback(async () => {
     let errorMessage = "Unknown error";
     setIsLoading(true);
@@ -73,32 +96,20 @@ function MainPage(): React.ReactElement {
   }, [getPlanets, searchQuery]);
 
   const [error, setError] = useState<string | null>(null);
-  const [errorBoolean, setErrorBoolean] = useState<boolean>(false);
-
-  function triggerError() {
-    setErrorBoolean(true);
-  }
 
   function handleSearch() {
-    navigate(`/1?search=${encodeURIComponent(inputValue)}`);
+    navigate(`/list/1?search=${encodeURIComponent(inputValue)}`);
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
   }
 
-  if (errorBoolean) {
-    throw new Error("Test error");
-  }
-
   return (
-    <div className="app-container" data-testid="app">
-      <Header></Header>
-      <h1 className="title">Star Wars Planets</h1>
-
+    <>
+      <h1 className={`title ${theme}`}>Star Wars Planets</h1>
       {error ? <div data-testid="error-message">{error}</div> : null}
-
-      <div className="search-container">
+      <div className={`search-container ${theme}`}>
         <Input value={inputValue} onChange={handleInputChange} />
         <Button onClick={handleSearch}>{"Search"}</Button>
       </div>
@@ -107,6 +118,8 @@ function MainPage(): React.ReactElement {
           searchPlanets={searchPlanets}
           isLoading={isLoading}
           inputValue={inputValue}
+          onItemSelect={toggleItemSelection}
+          selectedItems={selectedItems}
         />
         <Outlet />
       </div>
@@ -118,8 +131,8 @@ function MainPage(): React.ReactElement {
           searchQuery={searchQuery}
         ></Pagination>
       )}
-      <ErrorButton onClick={triggerError} />
-    </div>
+      {!isLoading && <SelectedPlanets />}
+    </>
   );
 }
 

@@ -5,21 +5,31 @@ import About from "./About";
 import ErrorBoundary from "./ErrorBoundary";
 import { BrowserRouter } from "react-router";
 import PlanetCard from "./PlanetCard";
+import { ThemeProvider } from "./ThemeProvider";
+import { Provider } from "react-redux";
+import { store } from "./store/store";
+import Wrapper from "./Wrapper";
 
 function App() {
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/:pageNumber" element={<MainPage />}>
-            <Route path=":planetId" element={<PlanetCard />} />
-          </Route>
-          <Route path="/about" element={<About />} />
-          <Route path="*" element={<Page404 />} />
-        </Routes>
-      </BrowserRouter>
-    </ErrorBoundary>
+    <ThemeProvider>
+      <Provider store={store}>
+        <ErrorBoundary>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<Wrapper />}>
+                <Route path="/" element={<MainPage />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/list/:pageNumber" element={<MainPage />}>
+                  <Route path=":planetId" element={<PlanetCard />} />
+                </Route>
+                <Route path="*" element={<Page404 />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </ErrorBoundary>
+      </Provider>
+    </ThemeProvider>
   );
 }
 

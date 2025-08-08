@@ -14,7 +14,7 @@ function PlanetCard(): React.ReactElement {
   const navigate = useNavigate();
 
   const handleClose = () => {
-    navigate(pageNumber ? `/${pageNumber}` : "/");
+    navigate(pageNumber ? `/list/${pageNumber}` : "/");
   };
 
   useEffect(() => {

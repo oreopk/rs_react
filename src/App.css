@@ -1,3 +1,11 @@
+body {
+  background-color: white;
+}
+
+body.dark {
+  background-color: #2a2a2a;
+}
+
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -6,11 +14,23 @@
   padding-right: 100px;
 }
 
+.light {
+  background-color: white;
+}
+
+.dark {
+  background-color: #2a2a2a;
+}
+
 .title {
   text-align: center;
   color: #000000;
   margin-bottom: 30px;
   font-size: 2.5rem;
+}
+
+.title.dark {
+  color: #ffffff;
 }
 
 .search-container {
@@ -23,7 +43,7 @@
   margin-bottom: 30px;
 }
 
-input {
+.main-input {
   flex-grow: 1;
   padding: 12px 15px;
   border: 2px solid #444;
@@ -31,6 +51,9 @@ input {
   background-color: #141313;
   color: white;
   font-size: 1rem;
+}
+.search-container.dark {
+  background-color: #0e0e0e;
 }
 
 .search-container button {
@@ -68,11 +91,39 @@ input {
   gap: 10px;
 }
 
+.planet-checkbox {
+  width: 20px;
+  height: 20px;
+
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+
+  border: 2px solid #000;
+  background-color: #fff;
+  border-radius: 4px;
+
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.planet-checkbox:checked {
+  background-color: #ffd700;
+  border-color: #000;
+}
+
+.planet-checkbox:hover {
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+}
+
 .planet-card {
+  display: flex;
+  justify-content: space-between;
   background-color: #333;
   border-radius: 8px;
   padding: 10px 20px 10px 20px;
   transition: transform 0.3s;
+  cursor: pointer;
 }
 
 .planet-details {
@@ -199,8 +250,8 @@ input {
     transform: rotate(360deg);
   }
 }
+
 .error-test-button {
-  margin: 20px auto;
   padding: 10px 20px;
   background-color: #ffe81f;
   color: rgb(0, 0, 0);

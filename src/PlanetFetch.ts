@@ -41,7 +41,6 @@ const ArrayToPlanet2 = (data: {
     url: string;
   };
 }): PlanetsListItem => {
-  console.log(data.properties);
   return {
     uid: data.properties.uid,
     name: data.properties.name,

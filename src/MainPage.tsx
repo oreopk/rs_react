@@ -2,7 +2,7 @@ import React, {
   useRef,
   useState,
   useEffect,
-  useCallback,
+  // useCallback,
   useContext,
 } from "react";
 import {
@@ -12,7 +12,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./App.css";
-import { PlanetApi } from "./PlanetFetch";
+// import { PlanetApi } from "./PlanetFetch";
 import Planets from "./Planets";
 import Button from "./Button";
 import Input from "./Input";
@@ -24,6 +24,8 @@ import { useDispatch } from "react-redux";
 import { addItem, removeItem, stateItems } from "./store/selectedItemsSlice";
 import SelectedPlanets from "./SelectedPlanets/SelectedPlanets.tsx";
 import { useAppSelector } from "./hooks/hooks.ts";
+import { useGetPlanetsQuery } from "./PlanetRTKQuery";
+
 const planetsPerPage = 10;
 
 function MainPage(): React.ReactElement {
@@ -38,8 +40,11 @@ function MainPage(): React.ReactElement {
     localStorageKey,
     searchQuery,
   );
+
+  // const [error, setError] = useState<string | null>(null);
+
   const [searchPlanets, setPlanets] = useState<PlanetsListItem[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const [totalPlanets, setTotalPlanets] = useState(0);
 
   const { theme } = useContext(ThemeContext) || {};
@@ -47,6 +52,8 @@ function MainPage(): React.ReactElement {
   const dispatch = useDispatch();
 
   const selectedItems = useAppSelector(stateItems);
+
+  const { data: planets = [], error, isLoading } = useGetPlanetsQuery("");
 
   const toggleItemSelection = (item: PlanetsListItem) => {
     if (selectedItems.some((selected) => selected.uid === item.uid)) {
@@ -56,31 +63,31 @@ function MainPage(): React.ReactElement {
     }
   };
 
-  const getPlanets = useCallback(async () => {
-    let errorMessage = "Unknown error";
-    setIsLoading(true);
-    setError(null);
-    try {
-      const planets = await PlanetApi.fetchPlanets(searchQuery, currentPage);
-      const firstPlanetsIndex = (currentPage - 1) * planetsPerPage;
-      const lastPlanetsIndex = firstPlanetsIndex + planetsPerPage;
-      const currentPlanets = planets.planets.slice(
-        firstPlanetsIndex,
-        lastPlanetsIndex,
-      );
-      setTotalPlanets(planets.count);
-      setPlanets(currentPlanets);
-    } catch (error) {
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      } else if (typeof error === "string") {
-        errorMessage = error;
-      }
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [currentPage, searchQuery]);
+  // const getPlanets = useCallback(async () => {
+  //   let errorMessage = "Unknown error";
+  //   // setIsLoading(true);
+  //   // setError(null);
+  //   try {
+  //     const planets = await PlanetApi.fetchPlanets(searchQuery, currentPage);
+  //     const firstPlanetsIndex = (currentPage - 1) * planetsPerPage;
+  //     const lastPlanetsIndex = firstPlanetsIndex + planetsPerPage;
+  //     const currentPlanets = planets.planets.slice(
+  //       firstPlanetsIndex,
+  //       lastPlanetsIndex,
+  //     );
+  //     setTotalPlanets(planets.count);
+  //     setPlanets(currentPlanets);
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       errorMessage = error.message;
+  //     } else if (typeof error === "string") {
+  //       errorMessage = error;
+  //     }
+  //     // setError(errorMessage);
+  //   } finally {
+  //     // setIsLoading(false);
+  //   }
+  // }, [currentPage, searchQuery]);
 
   useEffect(() => {
     if (initialRender.current) {
@@ -92,10 +99,13 @@ function MainPage(): React.ReactElement {
   }, [inputValue, searchQuery, setInputValue]);
 
   useEffect(() => {
-    getPlanets();
-  }, [getPlanets, searchQuery]);
-
-  const [error, setError] = useState<string | null>(null);
+    // getPlanets();
+    const firstPlanetsIndex = (currentPage - 1) * planetsPerPage;
+    const lastPlanetsIndex = firstPlanetsIndex + planetsPerPage;
+    setPlanets(planets.slice(firstPlanetsIndex, lastPlanetsIndex));
+    setTotalPlanets(planets.length);
+    console.log(searchPlanets);
+  }, [isLoading]);
 
   function handleSearch() {
     navigate(`/list/1?search=${encodeURIComponent(inputValue)}`);
@@ -108,7 +118,9 @@ function MainPage(): React.ReactElement {
   return (
     <>
       <h1 className={`title ${theme}`}>Star Wars Planets</h1>
-      {error ? <div data-testid="error-message">{error}</div> : null}
+      {error ? (
+        <div data-testid="error-message">{JSON.stringify(error)}</div>
+      ) : null}
       <div className={`search-container ${theme}`}>
         <Input value={inputValue} onChange={handleInputChange} />
         <Button onClick={handleSearch}>{"Search"}</Button>

@@ -85,7 +85,16 @@ export const planetsApi = createApi({
         }
       },
     }),
+
+    getPlanetDetails: builder.query<PlanetProperties, string | undefined>({
+      query: (planetId) => `planets/${planetId}`,
+      transformResponse: (response: {
+        result: { properties: PlanetProperties };
+      }) => {
+        return response.result.properties;
+      },
+    }),
   }),
 });
 
-export const { useGetPlanetsQuery } = planetsApi;
+export const { useGetPlanetsQuery, useGetPlanetDetailsQuery } = planetsApi;

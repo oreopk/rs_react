@@ -1,15 +1,8 @@
-import React, { useEffect, useState } from "react";
-import type { PlanetProperties } from "./types";
 import Spinner from "./Spinner";
-import { PlanetApi } from "./PlanetFetch";
 import { useParams, useNavigate } from "react-router-dom";
+import { useGetPlanetDetailsQuery } from "./PlanetRTKQuery";
 
 function PlanetCard(): React.ReactElement {
-  const [error, setError] = useState<string | null>(null);
-  const [isLoadingDetail, setIsLoadingDetail] = useState<boolean>(false);
-  const [selectedPlanet, setSelectedPlanet] = useState<PlanetProperties | null>(
-    null,
-  );
   const { planetId, pageNumber } = useParams();
   const navigate = useNavigate();
 
@@ -17,36 +10,22 @@ function PlanetCard(): React.ReactElement {
     navigate(pageNumber ? `/list/${pageNumber}` : "/");
   };
 
-  useEffect(() => {
-    const getPlanetSelect = async () => {
-      let errorMessage = "Unknown error";
-      try {
-        if (!planetId) return null;
-        setIsLoadingDetail(true);
-        const planetUrl = `https://swapi.tech/api/planets/${planetId}`;
-        const planetDetails = await PlanetApi.fetchPlanetDetail(planetUrl);
-        setSelectedPlanet(planetDetails);
-      } catch (error) {
-        if (error instanceof Error) {
-          errorMessage = error.message;
-        } else if (typeof error === "string") {
-          errorMessage = error;
-        }
-        setError(errorMessage);
-      } finally {
-        setIsLoadingDetail(false);
-      }
-    };
-    getPlanetSelect();
-  }, [planetId]);
+  const {
+    data: selectedPlanet,
+    error,
+    isLoading,
+    isFetching,
+  } = useGetPlanetDetailsQuery(planetId);
 
   return (
     <div className="planet-details">
-      {isLoadingDetail ? (
+      {isLoading || isFetching ? (
         <Spinner />
       ) : (
         <>
-          {error ? <div data-testid="error-message">{error}</div> : null}
+          {error ? (
+            <div data-testid="error-message">{JSON.stringify(error)}</div>
+          ) : null}
           {selectedPlanet && (
             <>
               <button className="close-button" onClick={handleClose}>

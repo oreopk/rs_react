@@ -45,6 +45,7 @@ function MainPage(): React.ReactElement {
     error,
     isLoading,
     isFetching,
+    refetch,
   } = useGetPlanetsQuery({ page: currentPage, search: searchQuery });
 
   const toggleItemSelection = (item: PlanetsListItem) => {
@@ -98,6 +99,7 @@ function MainPage(): React.ReactElement {
           totalPlanets={total_records}
           currentPage={currentPage}
           searchQuery={searchQuery}
+          refetch={refetch}
         ></Pagination>
       )}
       {!isLoading && <SelectedPlanets />}

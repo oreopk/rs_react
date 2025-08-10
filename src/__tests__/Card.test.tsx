@@ -32,6 +32,7 @@ describe("Planet Cards Rendering", () => {
       orbital_period: "364",
       gravity: "1 standard",
       terrain: "grasslands, mountains",
+      url: "https://www.swapi.tech/api/planets/2",
     };
 
     vi.mocked(PlanetApi.fetchPlanetDetail).mockResolvedValue(mockPlanetData);

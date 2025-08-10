@@ -40,7 +40,7 @@ export const planetsApi = createApi({
       },
       transformResponse: (
         response: Response | PlanetDetailsResponseSearch,
-        meta,
+        _meta,
         arg,
       ): {
         planets: PlanetsListItem[];

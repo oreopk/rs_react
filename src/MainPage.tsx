@@ -41,7 +41,7 @@ function MainPage(): React.ReactElement {
   const selectedItems = useAppSelector(stateItems);
 
   const {
-    data: { planets = [], total_pages = 0, total_records = 0 } = {},
+    data: { planets = [], total_records = 0 } = {},
     error,
     isLoading,
     isFetching,

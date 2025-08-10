@@ -1,5 +1,5 @@
 export interface PlanetProperties {
-  name?: string;
+  name: string;
   diameter: string;
   rotation_period: string;
   orbital_period: string;
@@ -7,6 +7,7 @@ export interface PlanetProperties {
   climate: string;
   terrain: string;
   gravity: string;
+  url: string;
 }
 
 export interface Planet {

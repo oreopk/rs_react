@@ -1,12 +1,14 @@
 import { NavLink } from "react-router-dom";
 import "./Pagination.css";
 import { useParams } from "react-router-dom";
+import Button from "./Button";
 
 interface PaginationProps {
   planetsPerPage: number;
   totalPlanets: number;
   currentPage: number;
   searchQuery: string;
+  refetch: () => object;
 }
 
 export default function Pagination({
@@ -14,6 +16,7 @@ export default function Pagination({
   totalPlanets,
   currentPage,
   searchQuery,
+  refetch,
 }: PaginationProps): React.ReactElement {
   const pageNumbers = [];
   const { planetId } = useParams();
@@ -32,6 +35,7 @@ export default function Pagination({
           {number}
         </NavLink>
       ))}
+      <Button onClick={() => refetch()}>{"Refetch"}</Button>
     </div>
   );
 }

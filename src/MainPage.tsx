@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  // useCallback,
-  useContext,
-} from "react";
+import React, { useRef, useEffect, useContext } from "react";
 import {
   useParams,
   useSearchParams,
@@ -12,7 +6,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./App.css";
-// import { PlanetApi } from "./PlanetFetch";
 import Planets from "./Planets";
 import Button from "./Button";
 import Input from "./Input";
@@ -31,21 +24,15 @@ const planetsPerPage = 10;
 function MainPage(): React.ReactElement {
   const navigate = useNavigate();
   const { pageNumber } = useParams();
+  const currentPage = parseInt(pageNumber || "1", 10);
   const initialRender = useRef(true);
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
-  const currentPage = parseInt(pageNumber || "1", 10);
   const localStorageKey: string = "starWarsQuery";
   const [inputValue, setInputValue] = useLocalStorage(
     localStorageKey,
     searchQuery,
   );
-
-  // const [error, setError] = useState<string | null>(null);
-
-  const [searchPlanets, setPlanets] = useState<PlanetsListItem[]>([]);
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [totalPlanets, setTotalPlanets] = useState(0);
 
   const { theme } = useContext(ThemeContext) || {};
 
@@ -53,7 +40,12 @@ function MainPage(): React.ReactElement {
 
   const selectedItems = useAppSelector(stateItems);
 
-  const { data: planets = [], error, isLoading } = useGetPlanetsQuery("");
+  const {
+    data: { planets = [], total_pages = 0, total_records = 0 } = {},
+    error,
+    isLoading,
+    isFetching,
+  } = useGetPlanetsQuery({ page: currentPage, search: searchQuery });
 
   const toggleItemSelection = (item: PlanetsListItem) => {
     if (selectedItems.some((selected) => selected.uid === item.uid)) {
@@ -63,32 +55,6 @@ function MainPage(): React.ReactElement {
     }
   };
 
-  // const getPlanets = useCallback(async () => {
-  //   let errorMessage = "Unknown error";
-  //   // setIsLoading(true);
-  //   // setError(null);
-  //   try {
-  //     const planets = await PlanetApi.fetchPlanets(searchQuery, currentPage);
-  //     const firstPlanetsIndex = (currentPage - 1) * planetsPerPage;
-  //     const lastPlanetsIndex = firstPlanetsIndex + planetsPerPage;
-  //     const currentPlanets = planets.planets.slice(
-  //       firstPlanetsIndex,
-  //       lastPlanetsIndex,
-  //     );
-  //     setTotalPlanets(planets.count);
-  //     setPlanets(currentPlanets);
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       errorMessage = error.message;
-  //     } else if (typeof error === "string") {
-  //       errorMessage = error;
-  //     }
-  //     // setError(errorMessage);
-  //   } finally {
-  //     // setIsLoading(false);
-  //   }
-  // }, [currentPage, searchQuery]);
-
   useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
@@ -97,15 +63,6 @@ function MainPage(): React.ReactElement {
       }
     }
   }, [inputValue, searchQuery, setInputValue]);
-
-  useEffect(() => {
-    // getPlanets();
-    const firstPlanetsIndex = (currentPage - 1) * planetsPerPage;
-    const lastPlanetsIndex = firstPlanetsIndex + planetsPerPage;
-    setPlanets(planets.slice(firstPlanetsIndex, lastPlanetsIndex));
-    setTotalPlanets(planets.length);
-    console.log(searchPlanets);
-  }, [isLoading]);
 
   function handleSearch() {
     navigate(`/list/1?search=${encodeURIComponent(inputValue)}`);
@@ -127,8 +84,8 @@ function MainPage(): React.ReactElement {
       </div>
       <div className="main-container">
         <Planets
-          searchPlanets={searchPlanets}
-          isLoading={isLoading}
+          searchPlanets={planets}
+          isLoading={isLoading || isFetching}
           inputValue={inputValue}
           onItemSelect={toggleItemSelection}
           selectedItems={selectedItems}
@@ -138,7 +95,7 @@ function MainPage(): React.ReactElement {
       {isLoading ? null : (
         <Pagination
           planetsPerPage={planetsPerPage}
-          totalPlanets={totalPlanets}
+          totalPlanets={total_records}
           currentPage={currentPage}
           searchQuery={searchQuery}
         ></Pagination>

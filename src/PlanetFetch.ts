@@ -58,6 +58,7 @@ const ToPlanet = (data: { properties: PlanetProperties }): PlanetProperties => {
     climate: data.properties.climate,
     terrain: data.properties.terrain,
     gravity: data.properties.gravity,
+    url: data.properties.url,
   };
 };
 

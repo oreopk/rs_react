@@ -11,11 +11,16 @@
     "format:fix": "prettier --write .",
     "prepare": "husky",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "next-dev": "next dev",
+    "next-build": "next build",
+    "start": "next start",
+    "export": "next export"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "@types/react-router-dom": "^5.3.3",
+    "next": "^15.4.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
@@ -27,6 +32,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "24.3.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@types/testing-library__user-event": "^4.2.0",

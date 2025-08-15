@@ -10,7 +10,7 @@
   max-height: 50vh;
   transition: bottom 0.3s ease;
 }
-.selected-planets h3{
+.selected-planets h3 {
   margin: 1px;
   margin-bottom: 10px;
 }

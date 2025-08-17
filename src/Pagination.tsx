@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import "./Pagination.css";
 import { useParams } from "react-router-dom";
-import Button from "./Button";
+import Button from "./components/Button/Button";
 
 interface PaginationProps {
   planetsPerPage: number;

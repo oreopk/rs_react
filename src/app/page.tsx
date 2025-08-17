@@ -1,11 +1,11 @@
 import { redirect } from "@/i18n/navigation";
 
-export default function Page() {
+export default async function Page() {
   redirect({
     href: {
       pathname: "/list/[pageNumber]",
       params: { pageNumber: "1" },
     },
-    locale: "en",
+    locale: "ru",
   });
 }

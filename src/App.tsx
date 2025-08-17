@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import MainPage from "./MainPage";
-import Page404 from "./Page404";
+import Page404 from "./app/not-found";
 import About from "./About";
 import ErrorBoundary from "./ErrorBoundary";
 import { BrowserRouter } from "react-router";

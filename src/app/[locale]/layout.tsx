@@ -1,26 +1,18 @@
-// import { ThemeProvider } from "../../src/ThemeProvider";
-// import { Provider } from "react-redux";
-// import { store } from "../store/store";
-// import ErrorBoundary from "../../src/ErrorBoundary";
-// import Header from "../../components/Header/Header";
-export default function RootLayout({
+import { ThemeProvider } from "../[locale]/providers/ThemeProvider";
+import Header from "../../components/Header/Header";
+import ReduxProvider from "../[locale]/providers/ReduxProvider";
+
+export default async function LocaleLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        {/* <ThemeProvider> */}
-        {/* <Provider store={store}> */}
-        {/* <ErrorBoundary> */}
-        {/* <Header /> */}
+    <ThemeProvider>
+      <ReduxProvider>
+        <Header />
         {children}
-        {/* <div id="root">{children}</div> */}
-        {/* </ErrorBoundary> */}
-        {/* </Provider> */}
-        {/* </ThemeProvider> */}
-      </body>
-    </html>
+      </ReduxProvider>
+    </ThemeProvider>
   );
 }

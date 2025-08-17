@@ -1,4 +1,4 @@
-import Spinner from "./Spinner";
+import Spinner from "./components/Spinner/Spinner";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetPlanetDetailsQuery } from "./PlanetRTKQuery";
 

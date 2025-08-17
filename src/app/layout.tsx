@@ -1,5 +1,5 @@
 import { NextIntlClientProvider } from "next-intl";
-
+import "./global.css";
 export default function RootLayout({
   children,
 }: {

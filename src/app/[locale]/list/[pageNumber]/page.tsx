@@ -5,7 +5,7 @@ import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Planets from "../../../../Planets";
 import Button from "../../../../components/Button/Button";
 import Input from "../../../../components/Input/Input";
-// import Pagination from "../../../../Pagination";
+import Pagination from "../../../../components/Pagination/Pagination";
 import type { PlanetsListItem } from "../../../../types";
 import useLocalStorage from "../../../../hooks/useLocalStorage";
 // import { ThemeContext } from "../../providers/ThemeContext.ts";
@@ -18,8 +18,6 @@ import {
 import SelectedPlanets from "../../../../SelectedPlanets/SelectedPlanets";
 import { useAppSelector } from "../../../../hooks/hooks";
 import { useGetPlanetsQuery } from "../../../../PlanetRTKQuery";
-
-// const planetsPerPage = 10;
 
 function MainPage() {
   const router = useRouter();
@@ -50,12 +48,12 @@ function MainPage() {
   const selectedItems = useAppSelector(stateItems);
 
   const {
-    // data: { planets = [], total_records = 0 } = {},
-    data: { planets = [] } = {},
+    data: { planets = [], total_records = 0 } = {},
+    // data: { planets = [] } = {},
     error,
     isLoading,
     isFetching,
-    // refetch,
+    refetch,
   } = useGetPlanetsQuery({ page: currentPage, search: searchQuery });
 
   const toggleItemSelection = (item: PlanetsListItem) => {
@@ -102,15 +100,15 @@ function MainPage() {
           selectedItems={selectedItems}
         />
       </div>
-      {/* {isLoading ? null : (
+      {isLoading ? null : (
         <Pagination
-          planetsPerPage={planetsPerPage}
+          planetsPerPage={10}
           totalPlanets={total_records}
           currentPage={currentPage}
           searchQuery={searchQuery}
           refetch={refetch}
         ></Pagination>
-      )} */}
+      )}
       {!isLoading && <SelectedPlanets />}
     </>
   );

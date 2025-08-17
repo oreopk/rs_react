@@ -5,11 +5,7 @@ export const routing = defineRouting({
   pathnames: {
     "/": "/",
     "/about": "/about",
-    "/list/[pageNumber]": {
-      en: "/list/[pageNumber]",
-    },
-    "/list/[pageNumber]/[planetId]": {
-      en: "/list/[pageNumber]/[planetId]",
-    },
+    "/list/[pageNumber]": "/list/[pageNumber]",
+    "/list/[pageNumber]/[planetId]": "/list/[pageNumber]/[planetId]",
   },
 });

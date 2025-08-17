@@ -1,4 +1,4 @@
-import Spinner from "./Spinner";
+import Spinner from "./components/Spinner/Spinner";
 import type { PlanetsListItem } from "./types";
 import PlanetMiniCard from "./PlanetMiniCard";
 

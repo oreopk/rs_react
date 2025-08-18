@@ -1,14 +1,47 @@
-import Spinner from "./components/Spinner/Spinner";
-import { useParams, useNavigate } from "react-router-dom";
-import { useGetPlanetDetailsQuery } from "./PlanetRTKQuery";
+"use client";
 
-function PlanetCard(): React.ReactElement {
-  const { planetId, pageNumber } = useParams();
-  const navigate = useNavigate();
+import Spinner from "../../../../../components/Spinner/Spinner";
+import { useGetPlanetDetailsQuery } from "../../../../../PlanetRTKQuery";
+import { Link } from "@/i18n/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
-  const handleClose = () => {
-    navigate(pageNumber ? `/list/${pageNumber}` : "/");
-  };
+function PlanetCard(): React.ReactElement | null {
+  const params = useParams<{
+    pageNumber?: string | string[];
+    planetId?: string | string[];
+  }>();
+  const searchParams = useSearchParams();
+
+  const pageParam = params?.pageNumber;
+  let page = "1";
+  if (Array.isArray(pageParam)) {
+    if (pageParam[0]) {
+      page = pageParam[0];
+    } else {
+      page = "1";
+    }
+  } else if (pageParam) {
+    page = pageParam;
+  }
+
+  const planetParam = params?.planetId;
+  let planetId = "";
+  if (Array.isArray(planetParam)) {
+    planetId = planetParam[0] ?? "";
+  } else if (planetParam) {
+    planetId = planetParam;
+  }
+  const search = searchParams?.get("search") ?? undefined;
+
+  const href: {
+    pathname: "/list/[pageNumber]";
+    params: { pageNumber: string };
+    query?: { search: string };
+  } = { pathname: "/list/[pageNumber]", params: { pageNumber: page } };
+
+  if (search) {
+    href.query = { search };
+  }
 
   const {
     data: selectedPlanet,
@@ -17,8 +50,10 @@ function PlanetCard(): React.ReactElement {
     isFetching,
   } = useGetPlanetDetailsQuery(planetId);
 
+  if (!planetId) return null;
+
   return (
-    <div className="planet-details">
+    <>
       {isLoading || isFetching ? (
         <Spinner />
       ) : (
@@ -28,9 +63,9 @@ function PlanetCard(): React.ReactElement {
           ) : null}
           {selectedPlanet && (
             <>
-              <button className="close-button" onClick={handleClose}>
+              <Link href={href} className="close-button">
                 Close
-              </button>
+              </Link>
               <h3 className="planet-name">{selectedPlanet.name}</h3>
               <div className="detail-row">
                 <span className="detail-label">Diameter:</span>
@@ -68,7 +103,7 @@ function PlanetCard(): React.ReactElement {
           )}
         </>
       )}
-    </div>
+    </>
   );
 }
 

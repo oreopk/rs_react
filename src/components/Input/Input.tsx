@@ -1,6 +1,6 @@
 import React from "react";
 import { useContext } from "react";
-import { ThemeContext } from "../../App/[locale]/providers/ThemeContext";
+import { ThemeContext } from "../../../src/app/[locale]/providers/ThemeContext";
 
 interface InputProps {
   value: string;

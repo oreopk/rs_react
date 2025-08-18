@@ -3,10 +3,10 @@
 import React, { useRef, useEffect } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
 import PlanetsHeader from "../../../../components/PlanetsHeader/PlanetsHeader";
-
+import { useContext } from "react";
 import Pagination from "../../../../components/Pagination/Pagination";
 import useLocalStorage from "../../../../hooks/useLocalStorage";
-// import { ThemeContext } from "../../providers/ThemeContext.ts";
+import { ThemeContext } from "../../providers/ThemeContext.ts";
 
 import SelectedPlanets from "../../../../SelectedPlanets/SelectedPlanets";
 import { useGetPlanetsQuery } from "../../../../PlanetRTKQuery";
@@ -37,8 +37,7 @@ export default function PageNumberLayout({
     searchQuery,
   );
 
-  // const { theme } = useContext(ThemeContext) || {};
-  const theme = "light";
+  const { theme } = useContext(ThemeContext) || {};
   const {
     data: { total_records = 0 } = {},
     refetch,

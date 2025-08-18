@@ -14,9 +14,7 @@ interface PlanetMiniCardProps {
 function PlanetMiniCard({ planet }: PlanetMiniCardProps): React.ReactElement {
   const router = useRouter();
   const params = useParams();
-  // const { pageNumber } = useParams();
   const searchParams = useSearchParams();
-  // const searchQuery = searchParams.get("search") || "";
 
   const pageParam = (params?.pageNumber ?? "") as string | string[];
   const pageNumber = Array.isArray(pageParam)
@@ -42,11 +40,6 @@ function PlanetMiniCard({ planet }: PlanetMiniCardProps): React.ReactElement {
   };
 
   const handleCardClick = () => {
-    // if (!pageNumber) {
-    //   navigate(`/list/1/${id}?search=${searchQuery}`);
-    // } else {
-    //   navigate(`/list/${pageNumber}/${id}?search=${searchQuery}`);
-    // }
     const basePage = pageNumber ?? "1";
     router.push(`/list/${basePage}/${id}?search=${encodeURIComponent(qs)}`);
   };

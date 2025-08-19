@@ -1,38 +1,47 @@
+"use client";
+
 import { useAppSelector } from "../hooks/hooks.ts";
 import { stateItems, clearAllItems } from "../store/selectedItemsSlice.ts";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import "./SelectedPlanets.css";
 
 export default function SelectedPlanets() {
   const selectedItems = useAppSelector(stateItems);
   const downloadRef = useRef<HTMLAnchorElement>(null);
-  const [downloadUrl, setDownloadUrl] = useState("");
-  const [filename, setFilename] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState<string | undefined>("");
+  const [filename, setFilename] = useState<string | undefined>("");
 
   const dispatch = useDispatch();
 
   const handleClearAll = () => {
     dispatch(clearAllItems());
   };
+  useEffect(() => {
+    if (!downloadRef.current || !downloadUrl) return;
+    downloadRef.current.click();
+    setDownloadUrl(undefined);
+    setFilename(undefined);
+  }, [downloadUrl, filename]);
 
-  function download() {
-    const name_column = "id,name,url \r\n";
-    const download_data = selectedItems
-      .map((items, id) => id + 1 + "," + items.name + "," + items.url)
-      .join("\r\n");
-    const csvdata = name_column + download_data;
+  useEffect(() => {
+    return () => {
+      if (downloadUrl) URL.revokeObjectURL(downloadUrl);
+    };
+  }, [downloadUrl]);
+
+  async function download() {
+    const response = await fetch("/api/selectedplanet", {
+      method: "POST",
+      body: JSON.stringify({ items: selectedItems }),
+    });
+
+    if (!response.ok) throw new Error(`Error get data CSV`);
+    const { csvdata } = await response.json();
     const csvBlob = new Blob([csvdata], { type: "text/csv" });
     const url = URL.createObjectURL(csvBlob);
     setDownloadUrl(url);
     setFilename(`${selectedItems.length}_items.csv`);
-    setTimeout(() => {
-      if (downloadRef.current) {
-        downloadRef.current.click();
-        URL.revokeObjectURL(url);
-        setDownloadUrl("");
-      }
-    }, 0);
   }
 
   return (

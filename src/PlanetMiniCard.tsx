@@ -1,7 +1,8 @@
+"use client";
+
 import React from "react";
 import type { PlanetsListItem } from "./types";
-import { useNavigate, useParams } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addItem, removeItem, stateItems } from "./store/selectedItemsSlice";
 import { useAppSelector } from "./hooks/hooks.ts";
@@ -11,11 +12,16 @@ interface PlanetMiniCardProps {
 }
 
 function PlanetMiniCard({ planet }: PlanetMiniCardProps): React.ReactElement {
-  const { pageNumber } = useParams();
-  const [searchParams] = useSearchParams();
-  const searchQuery = searchParams.get("search") || "";
+  const router = useRouter();
+  const params = useParams();
+  const searchParams = useSearchParams();
 
-  const navigate = useNavigate();
+  const pageParam = (params?.pageNumber ?? "") as string | string[];
+  const pageNumber = Array.isArray(pageParam)
+    ? pageParam[0]
+    : pageParam || undefined;
+
+  const qs = searchParams?.get("search") || "";
 
   const dispatch = useDispatch();
   const selectedItems = useAppSelector(stateItems);
@@ -34,11 +40,8 @@ function PlanetMiniCard({ planet }: PlanetMiniCardProps): React.ReactElement {
   };
 
   const handleCardClick = () => {
-    if (!pageNumber) {
-      navigate(`/list/1/${id}?search=${searchQuery}`);
-    } else {
-      navigate(`/list/${pageNumber}/${id}?search=${searchQuery}`);
-    }
+    const basePage = pageNumber ?? "1";
+    router.push(`/list/${basePage}/${id}?search=${encodeURIComponent(qs)}`);
   };
 
   return (

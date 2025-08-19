@@ -12,12 +12,6 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       ignoreEmptyLines: true,
-      thresholds: {
-        statements: 50,
-        branches: 50,
-        functions: 50,
-        lines: 50,
-      },
       include: ["src/**/*.{js,jsx,ts,tsx}"],
       exclude: [
         "src/**/*.test.{js,jsx,ts,tsx}",

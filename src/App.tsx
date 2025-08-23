@@ -1,35 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { createPortal } from "react-dom";
+import "./App.css";
+import UncontrolledForm from "./UncontrolledForm";
+import ControlledForm from "./ControlledForm";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [Modal, setModal] = useState<null | "unctrl" | "ctrl">(null);
 
   return (
-    <>
+    <div className="App">
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <button onClick={() => setModal("unctrl")}>Uncontrolled Form</button>
+        <button onClick={() => setModal("ctrl")}>Controlled Form</button>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
 
-export default App
+      {Modal &&
+        createPortal(
+          <div>
+            <div>
+              <button type="button" onClick={() => setModal(null)}>
+                Close
+              </button>
+            </div>
+            <div className="modal">
+              {Modal === "unctrl" ? <UncontrolledForm /> : <ControlledForm />}
+            </div>
+          </div>,
+          document.getElementById("portal-root") ?? document.body,
+        )}
+    </div>
+  );
+}

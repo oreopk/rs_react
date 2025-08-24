@@ -68,3 +68,36 @@ button {
   background-color: var(--main);
   width: 40%;
 }
+
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.tile {
+  flex: 1 1 100px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 5px 5px 5px rgba(0,0,0,0.1);
+  padding: 16px;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.label {
+  font-weight: 600;
+  color: #000000;
+}
+
+.value {
+  color: #0f172a;
+}

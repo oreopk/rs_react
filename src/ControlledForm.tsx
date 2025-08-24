@@ -1,19 +1,36 @@
 import { useState } from "react";
 import "./App.css";
+import { type dataType } from "./store/Slice";
+type Gender = "male" | "female";
 
-export default function ControlledForm() {
+export default function ControlledForm({
+  onSubmit,
+}: {
+  onSubmit: (data: dataType) => void;
+}) {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [email, setEmail] = useState("");
   const [password1, setPassword1] = useState("");
   const [password2, setPassword2] = useState("");
-  const [gender, setGender] = useState("male");
+  const [gender, setGender] = useState<Gender>("male");
   const [terms, setTerms] = useState(false);
   const [country, setCountry] = useState("");
   const [picture, setPicture] = useState<File | null>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const data = {
+      name,
+      age: Number(age),
+      email,
+      password1,
+      password2,
+      gender,
+      terms,
+      country,
+    };
+    onSubmit(data);
     console.log(name, age, email, password1, gender, terms, country, picture);
   };
 
@@ -31,7 +48,7 @@ export default function ControlledForm() {
 
   return (
     <div>
-      <h1>Form in React</h1>
+      <h1>Controlled Form</h1>
       <fieldset>
         <form
           action="#"
@@ -70,9 +87,9 @@ export default function ControlledForm() {
           />
           <label htmlFor="password">Password*</label>
           <input
-            type="tel"
             name="password"
             id="password"
+            type="password"
             value={password1}
             onChange={(e) => setPassword1(e.target.value)}
             placeholder="Enter Password"
@@ -80,6 +97,7 @@ export default function ControlledForm() {
           />
           <label htmlFor="password2">Confirm Password*</label>
           <input
+            name="password2"
             id="password2"
             type="password"
             value={password2}
@@ -94,7 +112,7 @@ export default function ControlledForm() {
               name="gender"
               value="male"
               checked={gender === "male"}
-              onChange={(e) => setGender(e.target.value)}
+              onChange={() => setGender("male")}
             />
             <span>Male</span>
           </label>
@@ -105,20 +123,9 @@ export default function ControlledForm() {
               name="gender"
               value="female"
               checked={gender === "female"}
-              onChange={(e) => setGender(e.target.value)}
+              onChange={() => setGender("female")}
             />
             <span>Female</span>
-          </label>
-
-          <label className="radio">
-            <input
-              type="radio"
-              name="gender"
-              value="other"
-              checked={gender === "other"}
-              onChange={(e) => setGender(e.target.value)}
-            />
-            <span>Other</span>
           </label>
           <label>Country*</label>
           <select

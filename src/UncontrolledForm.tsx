@@ -1,6 +1,11 @@
 import "./App.css";
-
-export default function UncontrolledForm() {
+import { type dataType } from "./store/Slice";
+type Gender = "male" | "female";
+export default function UncontrolledForm({
+  onSubmit,
+}: {
+  onSubmit: (data: dataType) => void;
+}) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -13,12 +18,12 @@ export default function UncontrolledForm() {
       email: String(fd.get("email") ?? ""),
       password1: String(fd.get("password1") ?? ""),
       password2: String(fd.get("password2") ?? ""),
-      gender: String(fd.get("gender") ?? ""),
+      gender: fd.get("gender") as Gender,
       country: String(fd.get("country") ?? ""),
       terms: fd.get("terms") !== null,
-      picture: fd.get("picture") as File,
+      // picture: fd.get("picture") as File, Пока не доделал
     };
-    console.log(data);
+    onSubmit(data);
     form.reset();
   };
 
@@ -78,9 +83,6 @@ export default function UncontrolledForm() {
           </label>
           <label>
             <input type="radio" name="gender" value="female" /> Female
-          </label>
-          <label>
-            <input type="radio" name="gender" value="other" /> Other
           </label>
 
           <label htmlFor="country">Country*</label>

@@ -103,7 +103,7 @@ button {
   color: #0f172a;
 }
 
-.tiles-column{
+.tiles-column {
   flex: 1 1 0;
   display: flex;
   flex-direction: column;

@@ -41,7 +41,7 @@ export default function Tile({ data }: { data: dataType | null }) {
 
           <div className="row">
             <div className="label">terms</div>
-            <div className="value">{data.terms}</div>
+            <div className="value">{String(data.terms)}</div>
           </div>
         </div>
       ) : null}

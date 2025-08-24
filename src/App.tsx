@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type JSX } from "react";
 import { createPortal } from "react-dom";
 import "./App.css";
 import UncontrolledForm from "./UncontrolledForm";
@@ -27,6 +27,8 @@ export default function App() {
     dispatch(setUncontrolled(data));
     setModal(null);
   };
+  const tilesUncontrolled: JSX.Element[] = [];
+  const tilesControlled: JSX.Element[] = [];
 
   const handleCtrlSubmit = (data: dataType) => {
     dispatch(setControlled(data));
@@ -36,6 +38,14 @@ export default function App() {
   const uncontrolled = useAppSelector((s: RootState) => s.form.uncontrolled);
   const controlled = useAppSelector((s: RootState) => s.form.controlled);
 
+  for (let i = 0; i < uncontrolled.length; i++) {
+    tilesUncontrolled.push(<Tile data={uncontrolled[i]} key={`${i}`} />);
+  }
+
+  for (let i = 0; i < controlled.length; i++) {
+    tilesControlled.push(<Tile data={controlled[i]} key={`${i}`} />);
+  }
+
   return (
     <div className="App">
       <div>
@@ -43,8 +53,8 @@ export default function App() {
         <button onClick={() => setModal("ctrl")}>Controlled Form</button>
       </div>
       <div className="tiles">
-        <Tile data={uncontrolled} />
-        <Tile data={controlled} />
+        <div className="tiles-column"> {tilesUncontrolled}</div>
+        <div className="tiles-column">{tilesControlled}</div>
       </div>
       {Modal &&
         createPortal(

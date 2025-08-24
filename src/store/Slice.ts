@@ -12,13 +12,13 @@ export type dataType = {
 };
 
 interface FormState {
-  uncontrolled: dataType | null;
-  controlled: dataType | null;
+  uncontrolled: dataType[];
+  controlled: dataType[];
 }
 
 const initialState: FormState = {
-  uncontrolled: null,
-  controlled: null,
+  uncontrolled: [],
+  controlled: [],
 };
 
 const formSlice = createSlice({
@@ -26,14 +26,14 @@ const formSlice = createSlice({
   initialState,
   reducers: {
     setUncontrolled: (state, action: PayloadAction<dataType>) => {
-      state.uncontrolled = action.payload;
+      state.uncontrolled.push(action.payload);
     },
     setControlled: (state, action: PayloadAction<dataType>) => {
-      state.controlled = action.payload;
+      state.controlled.push(action.payload);
     },
     reset: (state) => {
-      state.uncontrolled = null;
-      state.controlled = null;
+      state.uncontrolled = [];
+      state.controlled = [];
     },
   },
 });

@@ -1,7 +1,7 @@
 import { type dataType } from "./store/Slice";
 export default function Tile({ data }: { data: dataType | null }) {
   return (
-    <div className="tile">
+    <>
       {data ? (
         <div className="tile">
           <div className="row">
@@ -45,6 +45,6 @@ export default function Tile({ data }: { data: dataType | null }) {
           </div>
         </div>
       ) : null}
-    </div>
+    </>
   );
 }

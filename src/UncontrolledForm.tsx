@@ -37,7 +37,7 @@ export default function UncontrolledForm({
             id="name"
             name="name"
             type="text"
-            placeholder="Enter Name"
+            placeholder="Enter name"
             required
           />
 
@@ -64,7 +64,7 @@ export default function UncontrolledForm({
             id="password1"
             name="password1"
             type="password"
-            placeholder="Enter Password"
+            placeholder="Enter password"
             required
           />
 
@@ -73,7 +73,7 @@ export default function UncontrolledForm({
             id="password2"
             name="password2"
             type="password"
-            placeholder="Confirm Password"
+            placeholder="Confirm password"
             required
           />
           <label>Gender*</label>

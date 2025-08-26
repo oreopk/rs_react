@@ -1,6 +1,6 @@
 import { render, within } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
-import type { dataType } from "../store/Slice";
+import type { dataType } from "../store/formSlice";
 import { describe, expect, it } from "vitest";
 import Tile from "../Tile";
 

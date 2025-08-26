@@ -1,4 +1,4 @@
-import { type dataType } from "./store/Slice";
+import { type dataType } from "./store/formSlice";
 export default function Tile({ data }: { data: dataType | null }) {
   return (
     <>

@@ -1,8 +1,10 @@
 import "./App.css";
-import { type dataType } from "./store/Slice";
+import { type dataType } from "./store/formSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type FormFields, formSchema } from "./validation";
 import { Controller, useForm } from "react-hook-form";
+import { selectCountries } from "./store/countrySlice";
+import { useSelector } from "react-redux";
 
 export default function ControlledForm({
   onSubmit,
@@ -29,9 +31,8 @@ export default function ControlledForm({
       terms: false,
     },
   });
-
+  const countries = useSelector(selectCountries);
   const submit = (data: FormFields) => {
-    console.log(data);
     onSubmit(data as unknown as dataType);
     reset();
   };
@@ -174,19 +175,20 @@ export default function ControlledForm({
             render={({ field: { value, onChange }, fieldState: { error } }) => (
               <>
                 <label htmlFor="country">Country*</label>
-                <select
+                <input
                   id="country"
-                  autoComplete="country-name"
-                  value={value}
+                  type="text"
+                  list={value?.length ? "country-list" : undefined}
+                  value={value ?? ""}
+                  placeholder="Enter the country"
+                  autoComplete="off"
                   onChange={onChange}
-                >
-                  <option value="" disabled>
-                    Select your country
-                  </option>
-                  <option value="russia">Russia</option>
-                  <option value="usa">USA</option>
-                  <option value="germany">Germany</option>
-                </select>
+                />
+                <datalist id="country-list">
+                  {countries.map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
                 <p className="error">{error?.message}</p>
               </>
             )}

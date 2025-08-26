@@ -5,13 +5,26 @@ import UncontrolledForm from "./UncontrolledForm";
 import ControlledForm from "./ControlledForm";
 import Tile from "./Tile";
 import { useAppDispatch, useAppSelector } from "./store/hook";
-import { setUncontrolled, setControlled } from "./store/Slice";
-import { type dataType } from "./store/Slice";
+import { setUncontrolled, setControlled } from "./store/formSlice";
+import { type dataType } from "./store/formSlice";
 import type { RootState } from "./store";
+import { setCountries } from "./store/countrySlice";
 
 export default function App() {
   const [Modal, setModal] = useState<null | "unctrl" | "ctrl">(null);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch("https://restcountries.com/v3.1/all?fields=name");
+      const data: { name: { common: string } }[] = await res.json();
+
+      const countryNames = data.map((country) => country.name.common);
+      dispatch(setCountries(countryNames));
+    };
+    load();
+  }, [dispatch]);
+
   useEffect(() => {
     if (!Modal) return;
     const onEscape = (e: KeyboardEvent) => {

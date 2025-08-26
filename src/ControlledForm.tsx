@@ -44,6 +44,7 @@ export default function ControlledForm({
                 <label htmlFor="name">Name*</label>
                 <input
                   id="name"
+                  autoComplete="name"
                   value={value}
                   onChange={onChange}
                   placeholder="Enter name"
@@ -61,6 +62,7 @@ export default function ControlledForm({
                 <label htmlFor="age">Age*</label>
                 <input
                   id="age"
+                  autoComplete="off"
                   type="number"
                   value={value}
                   onChange={(e) =>
@@ -81,6 +83,7 @@ export default function ControlledForm({
                 <label htmlFor="email">Email*</label>
                 <input
                   id="email"
+                  autoComplete="email"
                   type="email"
                   value={value}
                   onChange={onChange}
@@ -99,6 +102,7 @@ export default function ControlledForm({
                 <label htmlFor="password1">Password*</label>
                 <input
                   id="password1"
+                  autoComplete="new-password"
                   type="password"
                   value={value}
                   onChange={onChange}
@@ -117,6 +121,7 @@ export default function ControlledForm({
                 <label htmlFor="password2">Confirm Password*</label>
                 <input
                   id="password2"
+                  autoComplete="new-password"
                   type="password"
                   value={value}
                   onChange={onChange}
@@ -136,6 +141,7 @@ export default function ControlledForm({
                 <label className="radio">
                   <input
                     type="radio"
+                    autoComplete="sex"
                     value="male"
                     checked={value === "male"}
                     onChange={() => onChange("male")}
@@ -145,6 +151,7 @@ export default function ControlledForm({
                 <label className="radio">
                   <input
                     type="radio"
+                    autoComplete="sex"
                     value="female"
                     checked={value === "female"}
                     onChange={() => onChange("female")}
@@ -162,7 +169,12 @@ export default function ControlledForm({
             render={({ field: { value, onChange }, fieldState: { error } }) => (
               <>
                 <label htmlFor="country">Country*</label>
-                <select id="country" value={value} onChange={onChange}>
+                <select
+                  id="country"
+                  autoComplete="country-name"
+                  value={value}
+                  onChange={onChange}
+                >
                   <option value="" disabled>
                     Select your country
                   </option>
@@ -183,6 +195,7 @@ export default function ControlledForm({
                 <label>
                   <input
                     type="checkbox"
+                    autoComplete="off"
                     checked={value}
                     onChange={(e) => onChange(e.target.checked)}
                   />

@@ -60,7 +60,11 @@ export default function App() {
         createPortal(
           <div className="modal-wrapper">
             <div>
-              <button type="button" onClick={() => setModal(null)}>
+              <button
+                className="close_button"
+                type="button"
+                onClick={() => setModal(null)}
+              >
                 Close
               </button>
             </div>

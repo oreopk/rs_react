@@ -1,5 +1,6 @@
 :root {
   --main: #c56e45;
+  --main_darker: #864120;
 }
 
 * {
@@ -8,15 +9,6 @@
 
 body {
   text-align: center;
-}
-
-.modal {
-  position: relative;
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  padding: 10px 20px;
-  width: 500px;
-  margin: 20px auto 0;
 }
 
 h1 {
@@ -112,4 +104,32 @@ button {
 
 .error {
   color: red;
+}
+
+.modal-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  place-items: center;
+  padding: 24px;
+  background: rgba(8, 14, 27, 0.4);
+  backdrop-filter: blur(6px);
+}
+
+.modal {
+  position: relative;
+  width: 500px;
+  max-height: 100vh;
+  border-radius: 15px;
+  background: #ffffff;
+  box-shadow: 0 0 24px rgba(0,0,0,0.4);
+  padding: 10px 20px;
+}
+
+.close_button{
+  width: 100%;
+}
+
+button:hover {
+  background-color:var(--main_darker);
 }

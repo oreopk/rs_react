@@ -41,6 +41,7 @@ export default function UncontrolledForm({
           <label htmlFor="name">Name*</label>
           <input
             id="name"
+            autoComplete="name"
             type="text"
             placeholder="Enter name"
             {...register("name")}
@@ -51,6 +52,7 @@ export default function UncontrolledForm({
           <label htmlFor="age">Age*</label>
           <input
             id="age"
+            autoComplete="off"
             type="number"
             placeholder="Enter age"
             {...register("age", { valueAsNumber: true })}
@@ -61,6 +63,7 @@ export default function UncontrolledForm({
           <label htmlFor="email">Email*</label>
           <input
             id="email"
+            autoComplete="email"
             type="email"
             placeholder="Enter email"
             {...register("email")}
@@ -71,6 +74,7 @@ export default function UncontrolledForm({
           <label htmlFor="password1">Password*</label>
           <input
             id="password1"
+            autoComplete="new-password"
             type="password"
             placeholder="Enter password"
             {...register("password1")}
@@ -81,6 +85,7 @@ export default function UncontrolledForm({
           <label htmlFor="password2">Confirm Password*</label>
           <input
             id="password2"
+            autoComplete="new-password"
             type="password"
             placeholder="Confirm password"
             {...register("password2")}
@@ -92,6 +97,7 @@ export default function UncontrolledForm({
           <label>
             <input
               type="radio"
+              autoComplete="sex"
               value="male"
               {...register("gender")}
               defaultChecked
@@ -99,12 +105,23 @@ export default function UncontrolledForm({
             Male
           </label>
           <label>
-            <input type="radio" value="female" {...register("gender")} /> Female
+            <input
+              type="radio"
+              autoComplete="sex"
+              value="female"
+              {...register("gender")}
+            />{" "}
+            Female
           </label>
           <p className="error">{errors.gender?.message}</p>
 
           <label htmlFor="country">Country*</label>
-          <select defaultValue="" {...register("country")} required>
+          <select
+            autoComplete="country-name"
+            defaultValue=""
+            {...register("country")}
+            required
+          >
             <option value="" disabled>
               Select your country
             </option>
@@ -115,7 +132,12 @@ export default function UncontrolledForm({
           <p className="error">{errors.country?.message}</p>
 
           <label>
-            <input type="checkbox" {...register("terms")} required /> Accept
+            <input
+              type="checkbox"
+              autoComplete="off"
+              {...register("terms")}
+              required
+            />{" "}
             Terms & Conditions
           </label>
           <p className="error">{errors.terms?.message}</p>

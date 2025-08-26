@@ -9,7 +9,12 @@ export default function ControlledForm({
 }: {
   onSubmit: (data: dataType) => void;
 }) {
-  const { control, handleSubmit, reset } = useForm<FormFields>({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isValid },
+  } = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
     reValidateMode: "onChange",
@@ -208,7 +213,7 @@ export default function ControlledForm({
           <button type="reset" value="reset" onClick={() => reset()}>
             Reset
           </button>
-          <button type="submit" value="Submit">
+          <button type="submit" value="Submit" disabled={!isValid}>
             Submit
           </button>
         </form>

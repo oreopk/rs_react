@@ -16,7 +16,7 @@ export default function UncontrolledForm({
     formState: { errors },
   } = useForm<FormFields>({
     resolver: zodResolver(formSchema),
-    mode: "onChange",
+    mode: "onSubmit",
     reValidateMode: "onChange",
     defaultValues: {
       name: "",

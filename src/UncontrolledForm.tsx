@@ -1,92 +1,110 @@
 import "./App.css";
 import { type dataType } from "./store/Slice";
-type Gender = "male" | "female";
+import { formSchema, type FormFields } from "./validation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 export default function UncontrolledForm({
   onSubmit,
 }: {
   onSubmit: (data: dataType) => void;
 }) {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const form = e.currentTarget;
-    const fd = new FormData(form);
-
-    const data = {
-      name: String(fd.get("name") ?? ""),
-      age: Number(fd.get("age") ?? 0),
-      email: String(fd.get("email") ?? ""),
-      password1: String(fd.get("password1") ?? ""),
-      password2: String(fd.get("password2") ?? ""),
-      gender: fd.get("gender") as Gender,
-      country: String(fd.get("country") ?? ""),
-      terms: fd.get("terms") !== null,
-      // picture: fd.get("picture") as File, Пока не доделал
-    };
-    onSubmit(data);
-    form.reset();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormFields>({
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: {
+      name: "",
+      age: undefined,
+      email: "",
+      password1: "",
+      password2: "",
+      gender: "male",
+      country: "",
+      terms: false,
+    },
+  });
+  const submit = (data: FormFields) => {
+    onSubmit(data as unknown as dataType);
+    reset();
   };
-
   return (
     <div>
       <h1>Uncontrolled Form</h1>
       <fieldset>
-        <form action="#" method="get" onSubmit={handleSubmit}>
+        <form noValidate onSubmit={handleSubmit(submit)}>
           <label htmlFor="name">Name*</label>
           <input
             id="name"
-            name="name"
             type="text"
             placeholder="Enter name"
+            {...register("name")}
             required
           />
+          <p className="error">{errors.name?.message}</p>
 
           <label htmlFor="age">Age*</label>
           <input
             id="age"
-            name="age"
             type="number"
             placeholder="Enter age"
+            {...register("age", { valueAsNumber: true })}
             required
           />
+          <p className="error">{errors.age?.message}</p>
 
           <label htmlFor="email">Email*</label>
           <input
             id="email"
-            name="email"
             type="email"
             placeholder="Enter email"
+            {...register("email")}
             required
           />
+          <p className="error">{errors.email?.message}</p>
 
           <label htmlFor="password1">Password*</label>
           <input
             id="password1"
-            name="password1"
             type="password"
             placeholder="Enter password"
+            {...register("password1")}
             required
           />
+          <p className="error">{errors.password1?.message}</p>
 
           <label htmlFor="password2">Confirm Password*</label>
           <input
             id="password2"
-            name="password2"
             type="password"
             placeholder="Confirm password"
+            {...register("password2")}
             required
           />
+          <p className="error">{errors.password2?.message}</p>
+
           <label>Gender*</label>
           <label>
-            <input type="radio" name="gender" value="male" defaultChecked />{" "}
+            <input
+              type="radio"
+              value="male"
+              {...register("gender")}
+              defaultChecked
+            />{" "}
             Male
           </label>
           <label>
-            <input type="radio" name="gender" value="female" /> Female
+            <input type="radio" value="female" {...register("gender")} /> Female
           </label>
+          <p className="error">{errors.gender?.message}</p>
 
           <label htmlFor="country">Country*</label>
-          <select name="country" defaultValue="" required>
+          <select defaultValue="" {...register("country")} required>
             <option value="" disabled>
               Select your country
             </option>
@@ -94,22 +112,17 @@ export default function UncontrolledForm({
             <option value="USA">USA</option>
             <option value="Germany">Germany</option>
           </select>
+          <p className="error">{errors.country?.message}</p>
 
           <label>
-            <input type="checkbox" name="terms" required /> Accept Terms &
-            Conditions
+            <input type="checkbox" {...register("terms")} required /> Accept
+            Terms & Conditions
           </label>
+          <p className="error">{errors.terms?.message}</p>
 
-          <label htmlFor="picture">Upload picture*</label>
-          <input
-            id="picture"
-            name="picture"
-            type="file"
-            accept="image/png,image/jpeg"
-            required
-          />
-
-          <button type="reset">Reset</button>
+          <button type="reset" value="reset" onClick={() => reset()}>
+            Reset
+          </button>
           <button type="submit">Submit</button>
         </form>
       </fieldset>

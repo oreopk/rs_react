@@ -10,7 +10,7 @@ export default function UncontrolledForm({
 }: {
   onSubmit: (data: dataType) => void;
 }) {
-  const countries = useSelector(selectCountries);
+  const countries = useSelector(selectCountries) ?? [];
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 

@@ -5,12 +5,15 @@ import { type FormFields, formSchema } from "./validation";
 import { Controller, useForm } from "react-hook-form";
 import { selectCountries } from "./store/countrySlice";
 import { useSelector } from "react-redux";
+import { useState } from "react";
+import passwordRecommendation from "./password";
 
 export default function ControlledForm({
   onSubmit,
 }: {
   onSubmit: (data: dataType) => void;
 }) {
+  const [passwordStrong, setPasswordStrong] = useState<string | null>(null);
   const {
     control,
     handleSubmit,
@@ -111,10 +114,23 @@ export default function ControlledForm({
                   autoComplete="new-password"
                   type="password"
                   value={value}
-                  onChange={onChange}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setPasswordStrong(passwordRecommendation(value));
+                    onChange(value);
+                  }}
                   placeholder="Enter password"
                 />
                 <p className="error">{error?.message}</p>
+                {passwordStrong && (
+                  <p
+                    className={
+                      passwordStrong === "Strong password" ? "good" : "warning"
+                    }
+                  >
+                    {passwordStrong}
+                  </p>
+                )}
               </>
             )}
           />
@@ -212,7 +228,14 @@ export default function ControlledForm({
               </>
             )}
           />
-          <button type="reset" value="reset" onClick={() => reset()}>
+          <button
+            type="reset"
+            value="reset"
+            onClick={() => {
+              reset();
+              setPasswordStrong(null);
+            }}
+          >
             Reset
           </button>
           <button type="submit" value="Submit" disabled={!isValid}>

@@ -1,26 +1,17 @@
 import * as z from "zod";
 
-const checkPassword = (p: string) => {
-  return /(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9])/.test(p);
-};
-
 export const formSchema = z
   .object({
-    name: z.string().min(2, "The minimum name is 2 characters"),
+    name: z
+      .string()
+      .min(2, "The minimum name is 2 characters")
+      .refine((letter) => /^[A-ZА-Я]/.test(letter), {
+        message: "Must begin with a capital letter",
+      }),
     age: z.number().int().min(1).max(100),
     email: z.email(),
-    password1: z
-      .string()
-      .min(6, "The minimum password is 6 characters")
-      .refine(checkPassword, {
-        message: "1 number, 1 upper, 1 lower, 1 special",
-      }),
-    password2: z
-      .string()
-      .min(6, "The minimum password is 6 characters")
-      .refine(checkPassword, {
-        message: "1 number, 1 upper, 1 lower, 1 special",
-      }),
+    password1: z.string().min(6, "The minimum password is 6 characters"),
+    password2: z.string().min(6, "The minimum password is 6 characters"),
     gender: z.enum(["male", "female"]),
     country: z.string().min(1, "Please select country"),
     terms: z.boolean().refine((terms) => terms === true, {

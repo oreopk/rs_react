@@ -4,6 +4,7 @@ import { formSchema } from "./validation";
 import { useSelector } from "react-redux";
 import { selectCountries } from "./store/countrySlice";
 import { useRef, useState } from "react";
+import passwordRecommendation from "./password";
 
 export default function UncontrolledForm({
   onSubmit,
@@ -13,6 +14,7 @@ export default function UncontrolledForm({
   const countries = useSelector(selectCountries) ?? [];
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [passwordStrong, setPasswordStrong] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -73,8 +75,20 @@ export default function UncontrolledForm({
             name="password1"
             type="password"
             placeholder="Enter password"
+            onInput={(e) =>
+              setPasswordStrong(passwordRecommendation(e.currentTarget.value))
+            }
           />
           <p className="error">{errors.password1}</p>
+          {passwordStrong && (
+            <p
+              className={
+                passwordStrong === "Strong password" ? "good" : "warning"
+              }
+            >
+              {passwordStrong}
+            </p>
+          )}
 
           <label htmlFor="password2">Confirm Password*</label>
           <input
@@ -123,7 +137,13 @@ export default function UncontrolledForm({
           </label>
           <p className="error">{errors.terms}</p>
 
-          <button type="reset" onClick={() => setErrors({})}>
+          <button
+            type="reset"
+            onClick={() => {
+              setErrors({});
+              setPasswordStrong(null);
+            }}
+          >
             Reset
           </button>
           <button type="submit">Submit</button>

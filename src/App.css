@@ -1,0 +1,146 @@
+:root {
+  --main: #c56e45;
+  --main_darker: #864120;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  text-align: center;
+}
+
+h1 {
+  text-align: center;
+  color: var(--main);
+}
+
+input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  font-size: 12px;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  display: inline;
+  width: 10%;
+}
+
+select {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+label {
+  font-size: 15px;
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 5px;
+  text-align: left;
+  color: #000000;
+  font-weight: bold;
+}
+
+button {
+  padding: 15px;
+  border-radius: 10px;
+  margin: 15px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  background-color: var(--main);
+  width: 40%;
+}
+
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 16px;
+  align-items: flex-start;
+}
+
+.tile {
+  flex: 1 1 100px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 5px 5px 5px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+}
+
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.label {
+  font-weight: 600;
+  color: #000000;
+}
+
+.value {
+  color: #0f172a;
+}
+
+.tiles-column {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.error {
+  color: red;
+}
+
+.warning {
+  color: rgb(230, 209, 23);
+}
+.good {
+  color: rgb(10, 226, 10);
+}
+.modal-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  place-items: center;
+  padding: 24px;
+  background: rgba(8, 14, 27, 0.4);
+  backdrop-filter: blur(6px);
+}
+
+.modal {
+  position: relative;
+  width: 500px;
+  max-height: 100vh;
+  border-radius: 15px;
+  background: #ffffff;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.4);
+  padding: 10px 20px;
+}
+
+.close_button {
+  width: 100%;
+}
+
+button:hover {
+  background-color: var(--main_darker);
+}
+
+button:disabled {
+  opacity: 0.2;
+  cursor: auto;
+}

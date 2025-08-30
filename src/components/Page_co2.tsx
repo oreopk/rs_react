@@ -1,4 +1,4 @@
-import { use, type JSX } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 
 type Location = {
   iso_code: string;
@@ -20,16 +20,22 @@ function lastPopulation(data: YearRow[]) {
   return { year: [], population: [] };
 }
 
-const Promise_co2 = fetch('/owid-co2-data.json').then((response) => {
-  if (!response.ok) {
-    throw new Error('Response error');
-  }
-  return response.json();
-});
-
 export default function Page_co2() {
+  const [data, setData] = useState<datajson | null>(null);
+
+  useEffect(() => {
+    fetch('/owid-co2-data.json')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Response error');
+        }
+        return response.json();
+      })
+      .then(setData);
+  }, []);
+
   const rows: JSX.Element[] = [];
-  const data = use<datajson>(Promise_co2);
+
   for (const key in data) {
     const node = data[key];
     if (!node) continue;

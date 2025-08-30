@@ -20,9 +20,7 @@ function lastPopulation(data: YearRow[]) {
   return { year: [], population: [] };
 }
 
-const Promise_co2 = fetch(
-  'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json'
-).then((response) => {
+const Promise_co2 = fetch('/owid-co2-data.json').then((response) => {
   if (!response.ok) {
     throw new Error('Response error');
   }
@@ -49,17 +47,19 @@ export default function Page_co2() {
   }
   return (
     <>
-      <table>
-        <thead>
-          <tr>
-            <th>Country</th>
-            <th>ISO</th>
-            <th>Population</th>
-            <th>Year</th>
-          </tr>
-        </thead>
-        <tbody>{rows}</tbody>
-      </table>
+      <div className="main_co2">
+        <table className="co2_table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>ISO</th>
+              <th>Population</th>
+              <th>Year</th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </table>
+      </div>
     </>
   );
 }

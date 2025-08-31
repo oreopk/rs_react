@@ -79,7 +79,7 @@ button:hover {
   background: #081b36;
 }
 
-.hidden_checkbox{
+.hidden_checkbox {
   position: absolute;
   opacity: 0;
   pointer-events: none;
@@ -111,10 +111,34 @@ button:hover {
   padding: 10px;
 }
 
-.table_wrapper{
+.table_wrapper {
   flex: 1 1 auto;
   overflow-y: auto;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   background: #fff;
+}
+
+.year_pick {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.year_select {
+  appearance: none;
+
+  min-width: 7rem;
+  padding: 5px;
+  border: 2px solid #c7ccd1;
+  border-radius: 10px;
+  background: #fff;
+
+  font: inherit;
+  color: #101828;
+  cursor: pointer;
+}
+
+.year_select:hover {
+  background: #b9d1ff;
 }

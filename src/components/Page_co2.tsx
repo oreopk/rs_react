@@ -25,6 +25,24 @@ export default function Page_co2() {
   const [data, setData] = useState<datajson | null>(null);
   const [open, setOpen] = useState(false);
   const [extraCols, setExtraCols] = useState<string[]>([]);
+  const [year, setYear] = useState<number>(2023);
+  const [yearlist, setyearList] = useState<number[]>([]);
+
+  useEffect(() => {
+    const getYears = () => {
+      const setYears = new Set<number>();
+      for (const key in data) {
+        const arr = data[key].data;
+        for (const data of arr) {
+          setYears.add(data.year);
+        }
+      }
+      const arrayYears = Array.from(setYears);
+      return arrayYears.sort((a, b) => b - a);
+    };
+    if (!data) return;
+    setyearList(getYears());
+  }, [data]);
 
   useEffect(() => {
     fetch('/owid-co2-data.json')
@@ -34,7 +52,7 @@ export default function Page_co2() {
         }
         return response.json();
       })
-      .then(setData);
+      .then((response) => setData(response));
   }, []);
 
   function toggleCol(key: string) {
@@ -53,22 +71,24 @@ export default function Page_co2() {
   }
 
   const rows: JSX.Element[] = [];
-
   for (const key in data) {
     const node = data[key];
     if (!node) continue;
     const name = key;
     const iso = node.iso_code;
-    const population = lastFieldValue(node.data, 'population', 2023);
-    const year = lastFieldValue(node.data, 'year', 2023);
+    const population = lastFieldValue(node.data, 'population', year);
+    const co2 = lastFieldValue(node.data, 'co2', year);
+    const co2_per_capita = lastFieldValue(node.data, 'co2_per_capita', year);
     rows.push(
       <tr key={key + iso}>
         <td>{name}</td>
         <td>{iso}</td>
         <td>{population}</td>
         <td>{year}</td>
+        <td>{co2}</td>
+        <td>{co2_per_capita}</td>
         {extraCols.map((column) => (
-          <td key={column}>{lastFieldValue(node.data, column, 2023) ?? ''}</td>
+          <td key={column}>{lastFieldValue(node.data, column, year) ?? ''}</td>
         ))}
       </tr>
     );
@@ -77,6 +97,7 @@ export default function Page_co2() {
     <>
       <div className="main_co2">
         <div className="header">
+          <div className="year_picker"></div>
           <button onClick={() => setOpen(true)}>Select Columns</button>
         </div>
         {open && (
@@ -122,7 +143,23 @@ export default function Page_co2() {
                 <th>Country</th>
                 <th>ISO</th>
                 <th>Population</th>
-                <th>Year</th>
+                <th className="year_pick">
+                  Select Year
+                  <select
+                    id="year"
+                    className="year_select"
+                    value={year}
+                    onChange={(e) => setYear(Number(e.target.value))}
+                  >
+                    {yearlist.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </th>
+                <th>Co2</th>
+                <th>co2_per_capita</th>
                 {extraCols.map((column) => (
                   <th key={column}>{column}</th>
                 ))}

@@ -22,6 +22,7 @@ function lastFieldValue(data: Row[], key: string, year: number) {
 }
 
 export default function Page_co2() {
+  const [sortDirection, setSortDirection] = useState<1 | -1>(1);
   const [data, setData] = useState<datajson | null>(null);
   const [open, setOpen] = useState(false);
   const [extraCols, setExtraCols] = useState<string[]>([]);
@@ -70,7 +71,8 @@ export default function Page_co2() {
     });
   }
 
-  const rows: JSX.Element[] = [];
+  const items = [];
+
   for (const key in data) {
     const node = data[key];
     if (!node) continue;
@@ -79,8 +81,26 @@ export default function Page_co2() {
     const population = lastFieldValue(node.data, 'population', year);
     const co2 = lastFieldValue(node.data, 'co2', year);
     const co2_per_capita = lastFieldValue(node.data, 'co2_per_capita', year);
+    items.push({ name, iso, node, population, co2, co2_per_capita });
+  }
+
+  let direction;
+  if (sortDirection === 1) {
+    direction = 1;
+  } else {
+    direction = -1;
+  }
+
+  items.sort((a, b) => {
+    const aNum = Number(a.population);
+    const bNum = Number(b.population);
+    return direction * (aNum - bNum);
+  });
+
+  const rows: JSX.Element[] = [];
+  for (const { name, iso, node, population, co2, co2_per_capita } of items) {
     rows.push(
-      <tr key={key + iso}>
+      <tr key={name + iso}>
         <td>{name}</td>
         <td>{iso}</td>
         <td>{population}</td>
@@ -93,6 +113,7 @@ export default function Page_co2() {
       </tr>
     );
   }
+
   return (
     <>
       <div className="main_co2">
@@ -142,7 +163,17 @@ export default function Page_co2() {
               <tr>
                 <th>Country</th>
                 <th>ISO</th>
-                <th>Population</th>
+                <th>
+                  <button
+                    onClick={() =>
+                      setSortDirection((direction) =>
+                        direction === 1 ? -1 : 1
+                      )
+                    }
+                  >
+                    Population {sortDirection === 1 ? '▲' : '▼'}
+                  </button>
+                </th>
                 <th className="year_pick">
                   Select Year
                   <select

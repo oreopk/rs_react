@@ -1,11 +1,10 @@
 .main_co2 {
-  max-width: 900px;
+  max-width: 1300px;
   margin: 40px auto;
 }
 
 .co2_table {
   width: 100%;
-  border-collapse: collapse;
   min-width: 600px;
 }
 
@@ -19,4 +18,103 @@
 .co2_table thead {
   background: #f5fbff;
   font-weight: 600;
+}
+
+.wrapper_modal {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal {
+  max-width: 400px;
+  max-height: 500px;
+  background: #ffffff;
+  border-radius: 12px;
+  flex-direction: column;
+  display: flex;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.modal_body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px;
+}
+
+.checkbox_flex {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal_actions {
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  background: #2267cf;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #081b36;
+}
+
+.hidden_checkbox{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.check_label {
+  display: block;
+  width: 90%;
+  padding: 8px 12px;
+  border: 1px solid #d0d7e2;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #0d1425;
+  cursor: pointer;
+}
+
+.check:hover .check_label {
+  border-color: #2267cf;
+}
+
+.check.is-active .check_label {
+  background: #2267cf;
+  color: #ffffff;
+  border-color: #2267cf;
+  box-shadow: 0 0 0 2px rgba(34, 103, 207, 0.2);
+}
+
+.header {
+  padding: 10px;
+}
+
+.table_wrapper{
+  flex: 1 1 auto;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
 }

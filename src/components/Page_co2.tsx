@@ -22,7 +22,7 @@ function lastFieldValue(data: Row[], key: string, year: number) {
 
 let PromiseCountry: Promise<Location[]>;
 
-function getCoyntry() {
+function getCountry() {
   if (!PromiseCountry) {
     PromiseCountry = fetch(
       'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json'
@@ -39,7 +39,8 @@ export default function Page_co2() {
   const [open, setOpen] = useState(false);
   const [extraCols, setExtraCols] = useState<string[]>([]);
   const [year, setYear] = useState<number>(2023);
-  const data = use(getCoyntry());
+  const data = use(getCountry());
+  const [filterNameCountry, setfilterNameCountry] = useState<string>('');
 
   const yearlist = useMemo<number[]>(() => {
     const setYears = new Set<number>();
@@ -103,6 +104,13 @@ export default function Page_co2() {
       items.push({ name, iso, node, population, co2, co2_per_capita });
     }
 
+    const term = filterNameCountry.trim().toLowerCase();
+
+    let filtered = items;
+    if (term) {
+      filtered = items.filter((item) => item.name.toLowerCase().includes(term));
+    }
+
     let direction;
     if (sortDirection === 1) {
       direction = 1;
@@ -110,34 +118,42 @@ export default function Page_co2() {
       direction = -1;
     }
 
-    items.sort((a, b) => {
+    filtered.sort((a, b) => {
       const aNum = Number(a.population);
       const bNum = Number(b.population);
       return direction * (aNum - bNum);
     });
 
-    return items.map(({ name, iso, node, population, co2, co2_per_capita }) => (
-      <tr key={name + iso}>
-        <td>{name ?? 'N/A'}</td>
-        <td>{iso ?? 'N/A'}</td>
-        <td>{population ?? 'N/A'}</td>
-        <td>{year ?? 'N/A'}</td>
-        <td>{co2 ?? 'N/A'}</td>
-        <td>{co2_per_capita ?? 'N/A'}</td>
-        {extraCols.map((column) => (
-          <td key={column}>
-            {lastFieldValue(node.data, column, year) ?? 'N/A'}
-          </td>
-        ))}
-      </tr>
-    ));
-  }, [data, extraCols, sortDirection, year]);
+    return filtered.map(
+      ({ name, iso, node, population, co2, co2_per_capita }) => (
+        <tr key={name + iso}>
+          <td>{name ?? 'N/A'}</td>
+          <td>{iso ?? 'N/A'}</td>
+          <td>{population ?? 'N/A'}</td>
+          <td>{year ?? 'N/A'}</td>
+          <td>{co2 ?? 'N/A'}</td>
+          <td>{co2_per_capita ?? 'N/A'}</td>
+          {extraCols.map((column) => (
+            <td key={column}>
+              {lastFieldValue(node.data, column, year) ?? 'N/A'}
+            </td>
+          ))}
+        </tr>
+      )
+    );
+  }, [data, extraCols, filterNameCountry, sortDirection, year]);
 
   return (
     <>
       <div className="main_co2">
         <div className="header">
-          <div className="year_picker"></div>
+          <input
+            type="text"
+            className="country_input"
+            value={filterNameCountry}
+            placeholder="enter the country name"
+            onChange={(e) => setfilterNameCountry(e.target.value)}
+          />
           <button onClick={() => setOpen(true)}>Select Columns</button>
         </div>
         {open && (

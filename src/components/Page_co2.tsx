@@ -24,7 +24,9 @@ let PromiseCountry: Promise<Location[]>;
 
 function getCoyntry() {
   if (!PromiseCountry) {
-    PromiseCountry = fetch('/owid-co2-data.json').then((response) => {
+    PromiseCountry = fetch(
+      'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json'
+    ).then((response) => {
       if (!response.ok) throw new Error('Response error');
       return response.json();
     });

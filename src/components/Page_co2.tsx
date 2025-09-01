@@ -20,6 +20,20 @@ function lastFieldValue(data: Row[], key: string, year: number) {
   }
 }
 
+let PromiseCounty: Promise<Location[]>;
+
+function getCoyntry() {
+  if (!PromiseCounty) {
+    PromiseCounty = fetch(
+      'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json'
+    ).then((response) => {
+      if (!response.ok) throw new Error('Response error');
+      return response.json();
+    });
+  }
+  return PromiseCounty;
+}
+
 export default function Page_co2() {
   const [sortDirection, setSortDirection] = useState<1 | -1>(1);
   const [open, setOpen] = useState(false);
@@ -27,16 +41,7 @@ export default function Page_co2() {
   const [year, setYear] = useState<number>(2023);
   const [yearlist, setyearList] = useState<number[]>([]);
 
-  const data = use(
-    fetch(
-      'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json'
-    ).then((response) => {
-      if (!response.ok) {
-        throw new Error('Response error');
-      }
-      return response.json();
-    })
-  );
+  const data = use(getCoyntry());
 
   useEffect(() => {
     const getYears = () => {

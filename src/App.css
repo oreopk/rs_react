@@ -142,3 +142,13 @@ button:hover {
 .year_select:hover {
   background: #b9d1ff;
 }
+
+.loader {
+  font-size: 40px;
+  font-weight: 600;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+}

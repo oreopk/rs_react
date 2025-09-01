@@ -1,5 +1,5 @@
 import Modal from './Modal';
-import { useEffect, useState, type JSX } from 'react';
+import { use, useEffect, useState, type JSX } from 'react';
 import type { extraRow } from './types';
 import { extra_key } from './types';
 
@@ -11,7 +11,6 @@ type Location = {
   iso_code: string;
   data: extraRow[];
 };
-type datajson = Record<string, Location>;
 
 function lastFieldValue(data: Row[], key: string, year: number) {
   for (let i = data.length - 1; i >= 0; i--) {
@@ -23,11 +22,21 @@ function lastFieldValue(data: Row[], key: string, year: number) {
 
 export default function Page_co2() {
   const [sortDirection, setSortDirection] = useState<1 | -1>(1);
-  const [data, setData] = useState<datajson | null>(null);
   const [open, setOpen] = useState(false);
   const [extraCols, setExtraCols] = useState<string[]>([]);
   const [year, setYear] = useState<number>(2023);
   const [yearlist, setyearList] = useState<number[]>([]);
+
+  const data = use(
+    fetch(
+      'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json'
+    ).then((response) => {
+      if (!response.ok) {
+        throw new Error('Response error');
+      }
+      return response.json();
+    })
+  );
 
   useEffect(() => {
     const getYears = () => {
@@ -45,17 +54,6 @@ export default function Page_co2() {
     setyearList(getYears());
   }, [data]);
 
-  useEffect(() => {
-    fetch('/owid-co2-data.json')
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Response error');
-        }
-        return response.json();
-      })
-      .then((response) => setData(response));
-  }, []);
-
   function toggleCol(key: string) {
     setExtraCols((prev) => {
       if (prev.includes(key)) {
@@ -71,14 +69,31 @@ export default function Page_co2() {
     });
   }
 
-  const items = [];
+  const items: Array<{
+    name: string;
+    iso: string;
+    node: Location;
+    population: number | null;
+    co2: string | number | undefined | null;
+    co2_per_capita: string | number | undefined | null;
+  }> = [];
+
+  const toCheckNumber = (num: unknown): number | null => {
+    if (typeof num === 'number') {
+      return Number.isFinite(num) ? num : null;
+    } else {
+      return null;
+    }
+  };
 
   for (const key in data) {
     const node = data[key];
     if (!node) continue;
     const name = key;
     const iso = node.iso_code;
-    const population = lastFieldValue(node.data, 'population', year);
+    const population = toCheckNumber(
+      lastFieldValue(node.data, 'population', year)
+    );
     const co2 = lastFieldValue(node.data, 'co2', year);
     const co2_per_capita = lastFieldValue(node.data, 'co2_per_capita', year);
     items.push({ name, iso, node, population, co2, co2_per_capita });

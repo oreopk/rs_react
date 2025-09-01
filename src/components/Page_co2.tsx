@@ -118,14 +118,16 @@ export default function Page_co2() {
 
     return items.map(({ name, iso, node, population, co2, co2_per_capita }) => (
       <tr key={name + iso}>
-        <td>{name}</td>
-        <td>{iso}</td>
-        <td>{population}</td>
-        <td>{year}</td>
-        <td>{co2}</td>
-        <td>{co2_per_capita}</td>
+        <td>{name ?? 'N/A'}</td>
+        <td>{iso ?? 'N/A'}</td>
+        <td>{population ?? 'N/A'}</td>
+        <td>{year ?? 'N/A'}</td>
+        <td>{co2 ?? 'N/A'}</td>
+        <td>{co2_per_capita ?? 'N/A'}</td>
         {extraCols.map((column) => (
-          <td key={column}>{lastFieldValue(node.data, column, year) ?? ''}</td>
+          <td key={column}>
+            {lastFieldValue(node.data, column, year) ?? 'N/A'}
+          </td>
         ))}
       </tr>
     ));

@@ -20,18 +20,18 @@ function lastFieldValue(data: Row[], key: string, year: number) {
   }
 }
 
-let PromiseCounty: Promise<Location[]>;
+let PromiseCountry: Promise<Location[]>;
 
 function getCoyntry() {
-  if (!PromiseCounty) {
-    PromiseCounty = fetch(
+  if (!PromiseCountry) {
+    PromiseCountry = fetch(
       'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json'
     ).then((response) => {
       if (!response.ok) throw new Error('Response error');
       return response.json();
     });
   }
-  return PromiseCounty;
+  return PromiseCountry;
 }
 
 export default function Page_co2() {

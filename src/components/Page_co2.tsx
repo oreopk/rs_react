@@ -1,5 +1,5 @@
 import Modal from './Modal';
-import { use, useEffect, useState, type JSX } from 'react';
+import { use, useCallback, useMemo, useState, type JSX } from 'react';
 import type { extraRow } from './types';
 import { extra_key } from './types';
 
@@ -24,9 +24,7 @@ let PromiseCountry: Promise<Location[]>;
 
 function getCoyntry() {
   if (!PromiseCountry) {
-    PromiseCountry = fetch(
-      'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json'
-    ).then((response) => {
+    PromiseCountry = fetch('/owid-co2-data.json').then((response) => {
       if (!response.ok) throw new Error('Response error');
       return response.json();
     });
@@ -39,27 +37,25 @@ export default function Page_co2() {
   const [open, setOpen] = useState(false);
   const [extraCols, setExtraCols] = useState<string[]>([]);
   const [year, setYear] = useState<number>(2023);
-  const [yearlist, setyearList] = useState<number[]>([]);
-
   const data = use(getCoyntry());
 
-  useEffect(() => {
-    const getYears = () => {
-      const setYears = new Set<number>();
-      for (const key in data) {
-        const arr = data[key].data;
-        for (const data of arr) {
-          setYears.add(data.year);
-        }
+  const yearlist = useMemo<number[]>(() => {
+    const setYears = new Set<number>();
+    for (const key in data) {
+      const arr = data[key].data;
+      for (const data of arr) {
+        setYears.add(data.year);
       }
-      const arrayYears = Array.from(setYears);
-      return arrayYears.sort((a, b) => b - a);
-    };
-    if (!data) return;
-    setyearList(getYears());
+    }
+    const arrayYears = Array.from(setYears);
+    return arrayYears.sort((a, b) => b - a);
   }, [data]);
 
-  function toggleCol(key: string) {
+  const toggleSort = useCallback(() => {
+    setSortDirection((dir) => (dir === 1 ? -1 : 1));
+  }, []);
+
+  const toggleCol = useCallback((key: string) => {
     setExtraCols((prev) => {
       if (prev.includes(key)) {
         return prev.filter((x) => {
@@ -72,16 +68,7 @@ export default function Page_co2() {
 
       return [...prev, key];
     });
-  }
-
-  const items: Array<{
-    name: string;
-    iso: string;
-    node: Location;
-    population: number | null;
-    co2: string | number | undefined | null;
-    co2_per_capita: string | number | undefined | null;
-  }> = [];
+  }, []);
 
   const toCheckNumber = (num: unknown): number | null => {
     if (typeof num === 'number') {
@@ -91,35 +78,43 @@ export default function Page_co2() {
     }
   };
 
-  for (const key in data) {
-    const node = data[key];
-    if (!node) continue;
-    const name = key;
-    const iso = node.iso_code;
-    const population = toCheckNumber(
-      lastFieldValue(node.data, 'population', year)
-    );
-    const co2 = lastFieldValue(node.data, 'co2', year);
-    const co2_per_capita = lastFieldValue(node.data, 'co2_per_capita', year);
-    items.push({ name, iso, node, population, co2, co2_per_capita });
-  }
+  const rows: JSX.Element[] = useMemo(() => {
+    const items: {
+      name: string;
+      iso: string;
+      node: Location;
+      population: number | null;
+      co2: string | number | undefined | null;
+      co2_per_capita: string | number | undefined | null;
+    }[] = [];
 
-  let direction;
-  if (sortDirection === 1) {
-    direction = 1;
-  } else {
-    direction = -1;
-  }
+    for (const key in data) {
+      const node = data[key];
+      if (!node) continue;
+      const name = key;
+      const iso = node.iso_code;
+      const population = toCheckNumber(
+        lastFieldValue(node.data, 'population', year)
+      );
+      const co2 = lastFieldValue(node.data, 'co2', year);
+      const co2_per_capita = lastFieldValue(node.data, 'co2_per_capita', year);
+      items.push({ name, iso, node, population, co2, co2_per_capita });
+    }
 
-  items.sort((a, b) => {
-    const aNum = Number(a.population);
-    const bNum = Number(b.population);
-    return direction * (aNum - bNum);
-  });
+    let direction;
+    if (sortDirection === 1) {
+      direction = 1;
+    } else {
+      direction = -1;
+    }
 
-  const rows: JSX.Element[] = [];
-  for (const { name, iso, node, population, co2, co2_per_capita } of items) {
-    rows.push(
+    items.sort((a, b) => {
+      const aNum = Number(a.population);
+      const bNum = Number(b.population);
+      return direction * (aNum - bNum);
+    });
+
+    return items.map(({ name, iso, node, population, co2, co2_per_capita }) => (
       <tr key={name + iso}>
         <td>{name}</td>
         <td>{iso}</td>
@@ -131,8 +126,8 @@ export default function Page_co2() {
           <td key={column}>{lastFieldValue(node.data, column, year) ?? ''}</td>
         ))}
       </tr>
-    );
-  }
+    ));
+  }, [data, extraCols, sortDirection, year]);
 
   return (
     <>
@@ -184,13 +179,7 @@ export default function Page_co2() {
                 <th>Country</th>
                 <th>ISO</th>
                 <th>
-                  <button
-                    onClick={() =>
-                      setSortDirection((direction) =>
-                        direction === 1 ? -1 : 1
-                      )
-                    }
-                  >
+                  <button onClick={toggleSort}>
                     Population {sortDirection === 1 ? '▲' : '▼'}
                   </button>
                 </th>

@@ -10,15 +10,15 @@
 
 ### Before optimization
 
-  *Render duration - 337.5ms*
-  
+_Render duration - 337.5ms_
+
 **Screenshot**
 
 ![](src/assets/add1.png)
 
 ### After optimization
 
-  *Render duration - 25.7ms*
+_Render duration - 25.7ms_
 
 **Screenshot**
 
@@ -28,7 +28,7 @@
 
 ### Before optimization
 
-  *Render duration - 349.7ms*
+_Render duration - 349.7ms_
 
 **Screenshot**
 
@@ -36,7 +36,7 @@
 
 ### After optimization
 
-  *Render duration - 40.1ms*
+_Render duration - 40.1ms_
 
 **Screenshot**
 
@@ -46,7 +46,7 @@
 
 ### Before optimization
 
-  *Render duration - 381ms*
+_Render duration - 381ms_
 
 **Screenshot**
 
@@ -54,9 +54,8 @@
 
 ### After optimization
 
-  *Render duration - 420ms*
+_Render duration - 420ms_
 
 **Screenshot**
 
 ![](src/assets/add6.png)
-

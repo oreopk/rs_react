@@ -111,17 +111,10 @@ export default function Page_co2() {
       filtered = items.filter((item) => item.name.toLowerCase().includes(term));
     }
 
-    let direction;
-    if (sortDirection === 1) {
-      direction = 1;
-    } else {
-      direction = -1;
-    }
-
     filtered.sort((a, b) => {
       const aNum = Number(a.population);
       const bNum = Number(b.population);
-      return direction * (aNum - bNum);
+      return sortDirection * (aNum - bNum);
     });
 
     return filtered.map(

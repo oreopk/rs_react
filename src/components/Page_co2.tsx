@@ -24,9 +24,7 @@ let PromiseCountry: Promise<Location[]>;
 
 function getCountry() {
   if (!PromiseCountry) {
-    PromiseCountry = fetch(
-      'https://nyc3.digitaloceanspaces.com/owid-public/data/co2/owid-co2-data.json'
-    ).then((response) => {
+    PromiseCountry = fetch('owid-co2-data.json').then((response) => {
       if (!response.ok) throw new Error('Response error');
       return response.json();
     });
@@ -41,6 +39,9 @@ export default function Page_co2() {
   const [year, setYear] = useState<number>(2023);
   const data = use(getCountry());
   const [filterNameCountry, setfilterNameCountry] = useState<string>('');
+  const [sortField, setSortField] = useState<'population' | 'countryName'>(
+    'countryName'
+  );
 
   const yearlist = useMemo<number[]>(() => {
     const setYears = new Set<number>();
@@ -54,7 +55,8 @@ export default function Page_co2() {
     return arrayYears.sort((a, b) => b - a);
   }, [data]);
 
-  const toggleSort = useCallback(() => {
+  const toggleSort = useCallback((field: 'population' | 'countryName') => {
+    setSortField(field);
     setSortDirection((dir) => (dir === 1 ? -1 : 1));
   }, []);
 
@@ -112,9 +114,15 @@ export default function Page_co2() {
     }
 
     filtered.sort((a, b) => {
-      const aNum = Number(a.population);
-      const bNum = Number(b.population);
-      return sortDirection * (aNum - bNum);
+      if (sortField === 'population') {
+        const aNum = Number(a.population);
+        const bNum = Number(b.population);
+        return sortDirection * (aNum - bNum);
+      } else {
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
+        return sortDirection * aName.localeCompare(bName);
+      }
     });
 
     return filtered.map(
@@ -134,7 +142,7 @@ export default function Page_co2() {
         </tr>
       )
     );
-  }, [data, extraCols, filterNameCountry, sortDirection, year]);
+  }, [data, extraCols, filterNameCountry, sortDirection, sortField, year]);
 
   return (
     <>
@@ -189,10 +197,14 @@ export default function Page_co2() {
           <table className="co2_table">
             <thead>
               <tr>
-                <th>Country</th>
+                <th>
+                  <button onClick={() => toggleSort('countryName')}>
+                    Country {sortDirection === 1 ? '▲' : '▼'}
+                  </button>
+                </th>
                 <th>ISO</th>
                 <th>
-                  <button onClick={toggleSort}>
+                  <button onClick={() => toggleSort('population')}>
                     Population {sortDirection === 1 ? '▲' : '▼'}
                   </button>
                 </th>
